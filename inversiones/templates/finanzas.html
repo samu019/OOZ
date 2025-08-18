@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Finanzas{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Resumen Financiero</h2>
+    <p><strong>Balance actual:</strong> {{ balance }}</p>
+    <p><strong>Total invertido:</strong> {{ total_invertido }}</p>
+    <p><strong>Total de ganancias:</strong> {{ total_ganancia }}</p>
+
+    <h3 class="mt-4">Historial de Inversiones</h3>
+    <table class="table">
+        <thead>
+            <tr><th>Nombre</th><th>Monto (USDT)</th><th>Ganancia (USDT)</th><th>Fecha</th></tr>
+        </thead>
+        <tbody>
+        {% for inv in inversiones %}
+            <tr>
+                <td>{{ inv.nombre }}</td>
+                <td>{{ inv.monto }}</td>
+                <td class="{% if inv.ganancia_valor > 0 %}text-success{% else %}text-danger{% endif %}">
+                    {{ inv.ganancia }}
+                </td>
+                <td>{{ inv.fecha }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="4" class="text-center">No hay inversiones activas.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Tareas Diarias{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Tarea Diaria VIP</h2>
+
+  {% if acceso_restringido %}
+    <div class="alert alert-warning">
+      Debes tener un plan VIP activo para acceder a las tareas.
+    </div>
+    <a href="{% url 'comprar_vip' %}" class="btn btn-primary">Comprar VIP</a>
+  {% else %}
+    {% if tarea %}
+      <div class="card p-3 mb-3" style="background:#e3f2fd; border:1px solid #90caf9;">
+        <h4>{{ tarea.titulo }}</h4>
+        <p>{{ tarea.descripcion }}</p>
+        <p><strong>Recompensa:</strong> {{ recompensa|floatformat:2 }} USDT</p>
+
+        {% if completada %}
+          <button class="btn btn-secondary" disabled>
+            ✅ Ya completaste la tarea de hoy
+            <span id="contador"></span>
+          </button>
+
+          <script>
+            document.addEventListener('DOMContentLoaded', function () {
+              // Convertir a entero asegurando que la variable siempre sea válida
+              let tiempoRestante = parseInt("{{ tiempo_restante|default:'0' }}", 10);
+
+              if (tiempoRestante > 0) {
+                const contador = document.getElementById('contador');
+                
+                function actualizarContador() {
+                  if (tiempoRestante <= 0) {
+                    contador.innerHTML = " - Disponible ahora";
+                    return;
+                  }
+
+                  let horas = Math.floor(tiempoRestante / 3600);
+                  let minutos = Math.floor((tiempoRestante % 3600) / 60);
+                  let segundos = tiempoRestante % 60;
+
+                  contador.innerHTML = ` - Disponible en ${horas}h ${minutos}m ${segundos}s`;
+                  tiempoRestante--;
+
+                  setTimeout(actualizarContador, 1000);
+                }
+
+                actualizarContador();
+              } else {
+                // En caso que tiempoRestante sea 0 o menos
+                const contador = document.getElementById('contador');
+                contador.innerHTML = " - Disponible ahora";
+              }
+            });
+          </script>
+
+        {% else %}
+          <form method="POST" action="{% url 'realizar_tarea' tarea.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Completar Tarea</button>
+          </form>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="alert alert-info">No hay tareas disponibles en este momento.</div>
+    {% endif %}
+  {% endif %}
+
+  <a href="{% url 'historial_tareas' %}" class="btn btn-outline-info mt-3">Ver historial</a>
+  <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary mt-3">Volver al panel</a>
+</div>
+{% endblock %}

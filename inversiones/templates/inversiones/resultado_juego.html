@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Resultado del Juego de Sobres</h2>
+  <p>Elegiste el sobre número: {{ juego.sobre_elegido }}</p>
+  <p>El número ganador fue: {{ juego.sobre_ganador }}</p>
+
+  {% if juego.resultado == 'ganado' %}
+    <p style="color:green; font-weight:bold;">¡Felicidades, ganaste!</p>
+  {% else %}
+    <p style="color:red; font-weight:bold;">Lo siento, perdiste esta vez.</p>
+  {% endif %}
+
+  <a href="{% url 'dashboard' %}">Volver al dashboard</a>
+{% endblock %}

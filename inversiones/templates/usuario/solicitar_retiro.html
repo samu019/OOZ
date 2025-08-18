@@ -1,0 +1,9 @@
+<h2>Solicitar Retiro</h2>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-success">Enviar solicitud</button>
+</form>
+
+<a href="{% url 'panel_usuario' %}">Volver al panel</a>

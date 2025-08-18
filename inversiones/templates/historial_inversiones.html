@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}Historial de Inversiones{% endblock %}
+
+{% block content %}
+<style>
+  .historial-container {
+    animation: fadeIn 0.8s ease;
+    margin-top: 30px;
+    padding: 20px;
+  }
+
+  .historial-container h2 {
+    font-size: 28px;
+    color: #004488;
+    margin-bottom: 20px;
+    animation: slideDown 1s ease;
+  }
+
+  .tabla-inversiones {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    animation: slideUp 1s ease;
+  }
+
+  .tabla-inversiones th, .tabla-inversiones td {
+    padding: 14px 18px;
+    text-align: center;
+    border-bottom: 1px solid #eaeaea;
+    font-size: 15px;
+  }
+
+  .tabla-inversiones th {
+    background: linear-gradient(to right, #004488, #0077cc);
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .tabla-inversiones tbody tr {
+    transition: background 0.3s, transform 0.2s;
+  }
+
+  .tabla-inversiones tbody tr:hover {
+    background-color: #f0faff;
+    transform: scale(1.01);
+  }
+
+  .tabla-inversiones tbody td span {
+    font-weight: bold;
+  }
+
+  .btn-volver {
+    display: inline-block;
+    margin-top: 25px;
+    background-color: #004488;
+    color: white;
+    padding: 10px 22px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+
+  .btn-volver:hover {
+    background-color: #0066cc;
+    transform: scale(1.05);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<div class="historial-container">
+  <h2 class="text-center">📊 Historial de Inversiones</h2>
+
+  <table class="tabla-inversiones">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Fecha</th>
+        <th>Tipo</th>
+        <th>Cantidad (USDT)</th>
+        <th>Resultado</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for inversion in inversiones %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ inversion.fecha|date:"Y-m-d H:i" }}</td>
+          <td>{{ inversion.tipo }}</td>
+          <td>{{ inversion.cantidad|floatformat:2 }}</td>
+          <td>
+            {% if inversion.resultado > 0 %}
+              <span style="color: green;">+{{ inversion.resultado|floatformat:2 }} USDT</span>
+            {% elif inversion.resultado < 0 %}
+              <span style="color: red;">{{ inversion.resultado|floatformat:2 }} USDT</span>
+            {% else %}
+              <span style="color: gray;">0.00 USDT</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5" style="color: gray;">Aún no has registrado inversiones.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a href="{% url 'dashboard' %}" class="btn-volver">← Volver al panel</a>
+</div>
+{% endblock %}

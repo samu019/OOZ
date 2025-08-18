@@ -1,0 +1,93 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h1>Resumen de la Plataforma</h1>
+
+<div style="display:flex; gap:20px; flex-wrap: wrap;">
+
+  <div style="flex:1 1 250px; padding:15px; border:1px solid #ccc; border-radius:8px; background:#f0f8ff;">
+    <h3>Usuarios registrados</h3>
+    <p style="font-size:2em; font-weight:bold;">{{ total_usuarios }}</p>
+  </div>
+
+  <div style="flex:1 1 250px; padding:15px; border:1px solid #ccc; border-radius:8px; background:#f9f9f9;">
+    <h3>Saldo total en plataforma</h3>
+    <p style="font-size:2em; font-weight:bold;">${{ saldo_total|floatformat:2 }}</p>
+  </div>
+
+  <div style="flex:1 1 250px; padding:15px; border:1px solid #ccc; border-radius:8px; background:#eef9f1;">
+    <h3>Inversiones activas</h3>
+    <p style="font-size:2em; font-weight:bold;">{{ total_inversiones }}</p>
+    <p>Valor actual total: ${{ valor_actual_total|floatformat:2 }}</p>
+  </div>
+
+  <div style="flex:1 1 250px; padding:15px; border:1px solid #ccc; border-radius:8px; background:#fff4e5;">
+    <h3>Depósitos</h3>
+    <ul style="list-style:none; padding-left:0;">
+      <li>Pendientes: <strong>{{ depositos_pendientes }}</strong></li>
+      <li>Aprobados: <strong>{{ depositos_aprobados }}</strong></li>
+      <li>Rechazados: <strong>{{ depositos_rechazados }}</strong></li>
+    </ul>
+  </div>
+
+</div>
+
+<hr style="margin: 40px 0;">
+
+<h2>Últimos depósitos</h2>
+<table style="width:100%; border-collapse: collapse;">
+  <thead>
+    <tr>
+      <th style="border-bottom:1px solid #ddd; padding:8px;">ID</th>
+      <th style="border-bottom:1px solid #ddd; padding:8px;">Usuario</th>
+      <th style="border-bottom:1px solid #ddd; padding:8px;">Monto</th>
+      <th style="border-bottom:1px solid #ddd; padding:8px;">Estado</th>
+      <th style="border-bottom:1px solid #ddd; padding:8px;">Fecha</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for deposito in ultimos_depositos %}
+    <tr>
+      <td style="padding:8px;">{{ deposito.id }}</td>
+      <td style="padding:8px;">{{ deposito.user.username }}</td>
+      <td style="padding:8px;">${{ deposito.amount|floatformat:2 }}</td>
+      <td style="padding:8px;">
+        {% if deposito.estado == 'P' %}Pendiente{% elif deposito.estado == 'A' %}Aprobado{% else %}Rechazado{% endif %}
+      </td>
+      <td style="padding:8px;">{{ deposito.fecha_solicitud|date:"Y-m-d H:i" }}</td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="5" style="padding:8px;">No hay depósitos recientes.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<hr style="margin: 40px 0;">
+
+<h2>Últimas inversiones</h2>
+<table style="width:100%; border-collapse: collapse;">
+  <thead>
+    <tr>
+      <th style="border-bottom:1px solid #ddd; padding:8px;">ID</th>
+      <th style="border-bottom:1px solid #ddd; padding:8px;">Usuario</th>
+      <th style="border-bottom:1px solid #ddd; padding:8px;">Monto</th>
+      <th style="border-bottom:1px solid #ddd; padding:8px;">Rentabilidad (%)</th>
+      <th style="border-bottom:1px solid #ddd; padding:8px;">Fecha</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for inv in ultimas_inversiones %}
+    <tr>
+      <td style="padding:8px;">{{ inv.id }}</td>
+      <td style="padding:8px;">{{ inv.user.username }}</td>
+      <td style="padding:8px;">${{ inv.amount|floatformat:2 }}</td>
+      <td style="padding:8px;">{{ inv.profitability }}</td>
+      <td style="padding:8px;">{{ inv.date|date:"Y-m-d" }}</td>
+    </tr>
+  {% empty %}
+    <tr><td colspan="5" style="padding:8px;">No hay inversiones recientes.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{% for vip in niveles_vip %}
+  <div class="vip-card">
+    <h3>{{ vip.nombre }}</h3>
+    <p>Costo: ${{ vip.costo }}</p>
+    <p>Retorno: {{ vip.porcentaje_retorno }}%</p>
+    <p>Duración: {{ vip.duracion_dias }} días</p>
+    <a href="{% url 'desbloquear_vip' vip.id %}" class="btn btn-success">Desbloquear</a>
+  </div>
+{% endfor %}

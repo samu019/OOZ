@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio | OOZ Plataforma de Inversiones{% endblock %}
+
+{% block content %}
+<style>
+  .center-box {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 40px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    text-align: center;
+  }
+
+  .center-box h2 {
+    margin-bottom: 30px;
+    font-size: 22px;
+    color: #333;
+  }
+
+  .btn {
+    display: inline-block;
+    margin: 10px;
+    padding: 12px 28px;
+    background-color: #fbc02d;
+    color: #333;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    border: none;
+  }
+
+  .btn:hover {
+    background-color: #f9a825;
+  }
+</style>
+
+<div class="center-box">
+  <h2>Bienvenido a la plataforma de inversiones</h2>
+  <a class="btn" href="{% url 'login' %}">Login</a>
+  <a class="btn" href="{% url 'registro' %}">Registro</a>
+</div>
+{% endblock %}

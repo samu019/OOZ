@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Retiros Pendientes{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #fff9c4; /* Amarillo claro */
+    }
+
+    .retiros-box {
+        max-width: 600px;
+        margin: 60px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+</style>
+
+<div class="retiros-box">
+    <h2 class="text-center mb-4">🕓 Retiros Pendientes</h2>
+
+    {% if retiros %}
+        <ul class="list-group">
+            {% for retiro in retiros %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ retiro.amount }} USD a {{ retiro.wallet_address }}
+                    <span class="badge bg-warning text-dark">{{ retiro.request_date|date:"d M Y - H:i" }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-center">No tienes retiros pendientes.</p>
+    {% endif %}
+
+    <div class="mt-4 text-center">
+        <a href="{% url 'home' %}" class="btn btn-secondary">← Volver al dashboard</a>
+    </div>
+</div>
+{% endblock %}

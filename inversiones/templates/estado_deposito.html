@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Estado de tu Depósito{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Historial de Depósitos</h2>
+
+    {% if historial %}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Monto</th>
+                    <th>Comprobante</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for deposito in historial %}
+                    <tr>
+                        <td>${{ deposito.monto }}</td>
+                        <td>
+                            {% if deposito.comprobante %}
+                                <a href="{{ deposito.comprobante.url }}" target="_blank">Ver</a>
+                            {% else %}
+                                No adjunto
+                            {% endif %}
+                        </td>
+                        <td>{{ deposito.fecha }}</td>
+                        <td>
+                            {% if deposito.estado == 'P' %}
+                                <span class="badge bg-warning text-dark">Pendiente</span>
+                            {% elif deposito.estado == 'E' %}
+                                <span class="badge bg-info text-dark">En proceso</span>
+                            {% elif deposito.estado == 'C' %}
+                                <span class="badge bg-success">Completado</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-center">No tienes depósitos registrados.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Mis Depósitos</h2>
+
+    <table class="table table-bordered mt-4">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Monto</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for deposito in depositos %}
+            <tr>
+                <td>{{ deposito.payment_id }}</td>
+                <td>${{ deposito.amount_usd }}</td>
+                <td>
+                    <span class="badge {% if deposito.status == 'pending' %}bg-warning{% elif deposito.status == 'confirmed' %}bg-success{% else %}bg-danger{% endif %}">
+                        {{ deposito.get_status_display }}
+                    </span>
+                </td>
+                <td>
+                    {% if deposito.status == 'pending' %}
+                        <a href="{% url 'finalizar_deposito' deposito.id %}" class="btn btn-success">Finalizar Depósito</a>
+                    {% else %}
+                        <a href="{% url 'informacion_deposito' deposito.id %}" class="btn btn-info">Ver Información</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center">No tienes depósitos activos.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

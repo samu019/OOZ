@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Soporte - Plataforma OOZ{% endblock %}
+
+{% block content %}
+<style>
+  .soporte-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    color: #fff;
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    animation: fadeIn 1s ease;
+  }
+
+  .idiomas {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .idiomas button {
+    background-color: #444;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .idiomas button:hover {
+    background-color: #777;
+  }
+
+  .contact-icons {
+    display: flex;
+    justify-content: space-around;
+    margin: 30px 0;
+    flex-wrap: wrap;
+  }
+
+  .contact-icons a {
+    text-align: center;
+    color: #fff;
+    text-decoration: none;
+    transition: transform 0.3s;
+  }
+
+  .contact-icons a:hover {
+    transform: scale(1.1);
+  }
+
+  .contact-icons img {
+    width: 80px;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  .toggle-section {
+    margin: 15px 0;
+    cursor: pointer;
+    background: #333;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+
+  .toggle-section:hover {
+    background: #444;
+  }
+
+  .hidden-content {
+    display: none;
+    padding: 10px 15px;
+    background: #222;
+    border-left: 4px solid #4caf50;
+    margin-bottom: 10px;
+    border-radius: 8px;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px);}
+    to { opacity: 1; transform: translateY(0);}
+  }
+</style>
+
+<div class="soporte-container">
+  <h2>Soporte</h2>
+
+  <!-- Idiomas -->
+  <div class="idiomas">
+    <button onclick="cambiarIdioma('es')">🇪🇸 Español</button>
+    <button onclick="cambiarIdioma('ar')">🇸🇦 عربي</button>
+    <button onclick="cambiarIdioma('zh')">🇨🇳 中文</button>
+  </div>
+
+  <!-- Contacto por plataformas -->
+  <div class="contact-icons">
+    <a href="https://wa.me/1234567890" target="_blank">
+      <img src="{% static 'icons/whatsapp.png' %}" alt="WhatsApp"><br>WhatsApp
+    </a>
+    <a href="https://t.me/usuario" target="_blank">
+      <img src="{% static 'icons/telegram.png' %}" alt="Telegram"><br>Telegram
+    </a>
+    <a href="https://vk.com/usuario" target="_blank">
+      <img src="{% static 'icons/vk.png' %}" alt="VK"><br>VK
+    </a>
+  </div>
+
+  <!-- Secciones ocultables -->
+  <div class="toggle-section" onclick="toggleSection('bio')">📜 Biografía de OOZ</div>
+  <div id="bio" class="hidden-content">
+    OOZ es una plataforma de inversión innovadora creada para ofrecer oportunidades financieras justas, con enfoque en educación, automatización y seguridad para todos sus usuarios.
+  </div>
+
+  <div class="toggle-section" onclick="toggleSection('quienes')">👥 ¿Quiénes somos?</div>
+  <div id="quienes" class="hidden-content">
+    Somos un equipo de desarrolladores y emprendedores apasionados por la tecnología financiera, con sede global y visión expansiva.
+  </div>
+
+  <div class="toggle-section" onclick="toggleSection('fundacion')">📅 ¿Cuándo fuimos creados?</div>
+  <div id="fundacion" class="hidden-content">
+    Nuestra plataforma fue fundada en el año 2024 con el propósito de hacer accesible la inversión digital.
+  </div>
+
+  <div class="toggle-section" onclick="toggleSection('aprende')">📚 Aprende más de nosotros</div>
+  <div id="aprende" class="hidden-content">
+    OOZ ofrece tutoriales, asistencia personalizada y análisis financiero para ayudarte a crecer como inversor. ¡Explora nuestra comunidad y aprende a tu ritmo!
+  </div>
+</div>
+
+<script>
+  function toggleSection(id) {
+    const el = document.getElementById(id);
+    el.style.display = el.style.display === 'block' ? 'none' : 'block';
+  }
+
+  function cambiarIdioma(idioma) {
+    const textos = {
+      es: {
+        bio: "OOZ es una plataforma de inversión innovadora...",
+        quienes: "Somos un equipo de desarrolladores...",
+        fundacion: "Nuestra plataforma fue fundada en el año 2024...",
+        aprende: "OOZ ofrece tutoriales, asistencia personalizada..."
+      },
+      ar: {
+        bio: "OOZ هي منصة استثمارية مبتكرة تقدم فرصًا مالية عادلة...",
+        quienes: "نحن فريق من المطورين ورواد الأعمال...",
+        fundacion: "تأسست منصتنا في عام 2024...",
+        aprende: "تقدم OOZ دروسًا، ومساعدة مخصصة، وتحليلات مالية..."
+      },
+      zh: {
+        bio: "OOZ 是一个创新的投资平台，致力于提供公平的金融机会...",
+        quienes: "我们是一支充满激情的金融科技开发团队...",
+        fundacion: "我们的平台成立于2024年...",
+        aprende: "OOZ 提供教程、个性化支持和金融分析..."
+      }
+    };
+    document.getElementById("bio").innerText = textos[idioma].bio;
+    document.getElementById("quienes").innerText = textos[idioma].quienes;
+    document.getElementById("fundacion").innerText = textos[idioma].fundacion;
+    document.getElementById("aprende").innerText = textos[idioma].aprende;
+    // Mostrar todas las secciones si están ocultas
+    ["bio", "quienes", "fundacion", "aprende"].forEach(id => {
+      document.getElementById(id).style.display = 'block';
+    });
+  }
+</script>
+{% endblock %}

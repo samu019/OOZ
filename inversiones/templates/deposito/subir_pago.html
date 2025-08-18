@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header text-center">
+            <h3>Sube tu Comprobante de Depósito y TCID</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="txid" class="form-label">ID de Transacción (TCID):</label>
+                    {{ form.txid }}
+                </div>
+
+                <div class="mb-3">
+                    <label for="captura_pago" class="form-label">Comprobante de Depósito:</label>
+                    {{ form.captura_pago }}
+                </div>
+
+                <div class="mb-3 form-check">
+                    {{ form.aceptar_terminos }}
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-success w-50">Enviar Proceso</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if deposito %}
+    <div class="alert alert-info mt-4" role="alert">
+        <strong>Depósito creado. Monto pendiente: </strong> ${{ deposito.amount_usd }} USD
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

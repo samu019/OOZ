@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<style>
+  .perfil-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2.5rem 2rem;
+    border-radius: 20px 50px 20px 50px; /* forma dinámica y moderna */
+    background: linear-gradient(135deg, #1e3c72, #2a5298, #ffffff);
+    box-shadow: 0 4px 15px rgba(42, 82, 152, 0.3);
+    color: #222;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: box-shadow 0.3s ease;
+  }
+
+  /* Sombra más suave al hacer hover */
+  .perfil-container:hover {
+    box-shadow: 0 6px 20px rgba(42, 82, 152, 0.5);
+  }
+
+  /* Adaptabilidad para pantallas pequeñas */
+  @media (max-width: 480px) {
+    .perfil-container {
+      margin: 1rem 1rem;
+      padding: 1.5rem 1rem;
+      border-radius: 15px 40px 15px 40px;
+    }
+  }
+
+  #foto-preview {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #2a5298;
+    background-color: #e6f0fa;
+    display: block;
+    margin: 0 auto 1rem auto;
+  }
+
+  .editable {
+    border: none;
+    background: transparent;
+    border-bottom: 1px dashed #2a5298;
+    width: 100%;
+    font-size: 1rem;
+    color: #222;
+    transition: border-color 0.3s ease;
+  }
+  .editable:focus {
+    outline: none;
+    border-bottom: 1px solid #1e3c72;
+    color: #000;
+  }
+
+  .edit-icon {
+    font-size: 0.9rem;
+    margin-left: 0.5rem;
+    cursor: pointer;
+    color: #1e3c72;
+  }
+</style>
+
+<div class="perfil-container">
+  <h2>Mi Perfil</h2>
+
+  <!-- FOTO -->
+  <div class="text-center">
+  {% if request.user.profile.photo %}
+    <img src="{{ request.user.profile.photo.url }}" id="foto-preview" class="foto-perfil" alt="Foto de perfil">
+  {% else %}
+    <img src="{% static 'img/avatar_default.png' %}" id="foto-preview" class="foto-perfil" alt="Avatar por defecto">
+  {% endif %}
+  <br>
+  <button class="btn btn-outline-primary btn-sm mt-2" onclick="mostrarOpcionesFoto()">Editar Foto</button>
+  <div id="opciones-foto" style="display: none;">
+    <input type="file" id="foto-input" accept="image/*" style="display: none;" onchange="subirFoto()">
+    <button onclick="document.getElementById('foto-input').click()" class="btn btn-sm btn-secondary mt-2">Seleccionar Foto</button>
+    <button onclick="eliminarFoto()" class="btn btn-sm btn-danger mt-2">Eliminar Foto</button>
+  </div>
+</div>
+
+<hr>
+
+<!-- CAMPOS -->
+<form id="perfil-form">
+  {% csrf_token %}
+  
+  <label>Nombre</label>
+  <div>
+    <input type="text" class="editable" id="first_name" value="{{ request.user.first_name }}">
+    <i class="edit-icon bi bi-pencil"></i>
+  </div>
+
+  <label>Apellido</label>
+  <div>
+    <input type="text" class="editable" id="last_name" value="{{ request.user.last_name }}">
+    <i class="edit-icon bi bi-pencil"></i>
+  </div>
+
+  <label>Email</label>
+  <input class="form-control" value="{{ request.user.email }}" disabled>
+
+  <label>Teléfono</label>
+  <div>
+    <input type="text" class="editable" id="phone" value="{{ request.user.profile.phone }}">
+    <i class="edit-icon bi bi-pencil"></i>
+  </div>
+
+  <label>Enlaces</label>
+  <div>
+    <input type="text" class="editable" id="links" value="{{ request.user.profile.links }}">
+    <i class="edit-icon bi bi-pencil"></i>
+  </div>
+
+  <label>Descripción</label>
+  <div>
+    <textarea class="editable" id="bio" rows="3">{{ request.user.profile.bio }}</textarea>
+    <i class="edit-icon bi bi-pencil"></i>
+  </div>
+</form>
+</div>
+
+<script>
+  function mostrarOpcionesFoto() {
+    document.getElementById('opciones-foto').style.display = 'block';
+  }
+
+  function subirFoto() {
+    let input = document.getElementById('foto-input');
+    let formData = new FormData();
+    formData.append('foto', input.files[0]);
+
+    fetch("{% url 'perfil_actualizar_foto' %}", {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'ok') {
+        document.getElementById('foto-preview').src = data.nueva_foto;
+        alert('✅ Foto actualizada');
+      } else {
+        alert('❌ Error al actualizar la foto');
+      }
+    })
+    .catch(error => {
+      console.error('Error al cargar la foto:', error);
+      alert('❌ Ocurrió un error al subir la foto');
+    });
+  }
+
+  function eliminarFoto() {
+    fetch("{% url 'perfil_eliminar_foto' %}", {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}'
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'ok') {
+        document.getElementById('foto-preview').src = '{% static "img/avatar_default.png" %}';
+        alert('🗑 Foto eliminada');
+      }
+    });
+  }
+
+  document.querySelectorAll('.editable').forEach(input => {
+    input.addEventListener('blur', () => {
+      const field = input.id;
+      const value = input.value;
+
+      fetch("{% url 'perfil_update_field' %}", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: new URLSearchParams({
+          'field': field,
+          'value': value
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status !== 'ok') {
+          alert('Error al guardar campo');
+        }
+      })
+      .catch(error => {
+        console.error('Error al guardar campo:', error);
+        alert('❌ Ocurrió un error al guardar el campo');
+      });
+    });
+  });
+</script>
+
+{% endblock %}

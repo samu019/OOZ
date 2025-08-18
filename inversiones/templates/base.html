@@ -1,0 +1,424 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}OOZ - Plataforma Simple{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #eee;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: #6d4c41;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1100;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .hamburger {
+      font-size: 28px;
+      color: #ffeb3b;
+      cursor: pointer;
+      z-index: 1200;
+      padding: 6px;
+    }
+
+    nav {
+      position: fixed;
+      left: -260px;
+      top: 60px;
+      width: 260px;
+      height: calc(100% - 60px);
+      background-color: #5d4037;
+      color: white;
+      padding-top: 20px;
+      transition: left 0.3s ease;
+      z-index: 1050;
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.3);
+    }
+
+    nav.open {
+      left: 0;
+    }
+
+    nav a {
+      display: block;
+      padding: 14px 24px;
+      color: #fff9c4;
+      text-decoration: none;
+      border-bottom: 1px solid #7b5e57;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      background-color: #fbc02d;
+      color: #5d4037;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 28px;
+      cursor: pointer;
+      color: #ffeb3b;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 100px auto 40px;
+      padding: 30px 20px;
+    }
+
+    /* Estilos para los canvas de gráficos */
+    #chartDepositos, #chartRetiros {
+      background-color: #0f0f0f;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(0,255,0,0.3);
+      margin-bottom: 40px;
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Popup de ganancias */
+    #gainPopup {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, #00ff00cc, #007700cc);
+      color: #000;
+      padding: 12px 24px;
+      border-radius: 24px;
+      font-weight: 700;
+      font-size: 18px;
+      box-shadow: 0 0 12px #00ff00cc;
+      opacity: 0;
+      transition: opacity 0.6s ease-in-out;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .img-ajustada {
+     width: 100%;
+     height: auto;
+     object-fit: contain;
+     max-height: 150px;
+     display: block;
+     margin: 0 auto;
+     border-radius: 10px;
+   }
+
+
+    /* Media queries para mejor responsividad */
+    @media (max-width: 768px) {
+      .container {
+        margin: 80px 10px 20px;
+        padding: 20px 10px;
+      }
+      #chartDepositos, #chartRetiros {
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>OOZ - Plataforma</h1>
+    <div class="hamburger" id="hamburgerBtn" aria-label="Abrir menú"><i class="fas fa-bars"></i></div>
+  </header>
+
+  <!-- Menú lateral -->
+  <nav id="sidebarMenu">
+    <div class="close-btn" id="closeBtn">&times;</div>
+
+    <a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Inicio</a>
+    <a href="{% url 'tareas_diarias' %}"><i class="fas fa-tasks"></i> Tareas Diarias</a>
+    <a href="{% url 'historial_tareas' %}"><i class="fas fa-history"></i> Historial Tareas</a>
+    <a href="{% url 'invertir' %}"><i class="fas fa-coins"></i> Invertir</a>
+    <a href="{% url 'perfil' %}"><i class="fas fa-user"></i> Mi Perfil</a>
+    <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+    <a href="#" onclick="openSupportModal()"><i class="fas fa-headset"></i> Soporte</a>
+  </nav>
+
+  <div class="container" id="mainContent">
+    {% block content %}
+      <!-- Aquí insertamos los gráficos -->
+      <canvas id="chartDepositos" width="700" height="350"></canvas>
+      <canvas id="chartRetiros" width="700" height="350"></canvas>
+    {% endblock %}
+  </div>
+
+  <!-- Modal Soporte -->
+  <div id="supportModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5);">
+    <div style="background:#fff; max-width:400px; margin:10% auto; padding:25px; border-radius:10px; position:relative;">
+      <span id="closeSupport" style="position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer;">&times;</span>
+      <h3>Contacto de soporte</h3>
+      <p><a href="https://t.me/tu_usuario_telegram" target="_blank">Telegram</a></p>
+      <p><a href="https://wa.me/tu_numero" target="_blank">WhatsApp</a></p>
+      <p><a href="mailto:soporte@ooz.com">Correo electrónico</a></p>
+    </div>
+  </div>
+ 
+
+  {% if messages %}
+    <div class="container mt-3">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const closeBtn = document.getElementById('closeBtn');
+    const sidebarMenu = document.getElementById('sidebarMenu');
+
+    hamburgerBtn.addEventListener('click', () => sidebarMenu.classList.add('open'));
+    closeBtn.addEventListener('click', () => sidebarMenu.classList.remove('open'));
+
+    function openSupportModal() {
+      document.getElementById('supportModal').style.display = 'block';
+    }
+
+    function closeSupportModal() {
+      document.getElementById('supportModal').style.display = 'none';
+    }
+
+    document.getElementById('closeSupport').addEventListener('click', closeSupportModal);
+    window.addEventListener('click', function (e) {
+      if (e.target === document.getElementById('supportModal')) closeSupportModal();
+    });
+  </script>
+
+  {% block extra_scripts %}
+  <script>
+    // --- Script gráfico profesional fondo negro, alcista/bajista ---
+    let depositosData = JSON.parse('{{ depositos_chart_json|default:"[]"|escapejs }}');
+    let retirosData = JSON.parse('{{ retiros_chart_json|default:"[]"|escapejs }}');
+
+    if (!depositosData.length) {
+      const now = new Date();
+      depositosData = Array.from({length: 20}, (_, i) => {
+        const time = new Date(now.getTime() - (19 - i) * 60000);
+        return { fecha: time.getHours().toString().padStart(2,'0') + ':' + time.getMinutes().toString().padStart(2,'0'), total: 100 + Math.random() * 50 };
+      });
+    }
+    if (!retirosData.length) {
+      const now = new Date();
+      retirosData = Array.from({length: 20}, (_, i) => {
+        const time = new Date(now.getTime() - (19 - i) * 60000);
+        return { fecha: time.getHours().toString().padStart(2,'0') + ':' + time.getMinutes().toString().padStart(2,'0'), total: 50 + Math.random() * 30 };
+      });
+    }
+
+    function generateSmoothValue(lastValue, maxChange=8) {
+      let change = (Math.random() - 0.5) * maxChange * 2;
+      const trend = Math.random() < 0.5 ? 1 : -1;
+      change = Math.abs(change) * trend;
+      let newValue = lastValue + change;
+      if (newValue < 0) newValue = 0;
+      return Math.round(newValue * 100) / 100;
+    }
+
+    function updateData(dataArray) {
+      const now = new Date();
+      const timeLabel = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
+      const lastTotal = dataArray[dataArray.length - 1].total;
+      const newTotal = generateSmoothValue(lastTotal);
+
+      dataArray.shift();
+      dataArray.push({ fecha: timeLabel, total: newTotal });
+    }
+
+    function createGradient(ctx, area, positive=true) {
+      const grad = ctx.createLinearGradient(0, area.bottom, 0, area.top);
+      if (positive) {
+        grad.addColorStop(0, 'rgba(0, 255, 0, 0.1)');
+        grad.addColorStop(1, 'rgba(0, 255, 0, 0.4)');
+      } else {
+        grad.addColorStop(0, 'rgba(255, 0, 0, 0.1)');
+        grad.addColorStop(1, 'rgba(255, 0, 0, 0.4)');
+      }
+      return grad;
+    }
+
+    function buildDataset(dataArray, ctx) {
+      const data = dataArray.map(d => d.total);
+      const points = dataArray.length;
+
+      let borderColors = [];
+      let backgroundColors = [];
+
+      for (let i = 0; i < points; i++) {
+        if (i === 0) {
+          borderColors.push('#00ff00');
+          backgroundColors.push('rgba(0,255,0,0.3)');
+        } else {
+          if (data[i] >= data[i-1]) {
+            borderColors.push('#00ff00');
+            backgroundColors.push('rgba(0,255,0,0.2)');
+          } else {
+            borderColors.push('#ff0000');
+            backgroundColors.push('rgba(255,0,0,0.2)');
+          }
+        }
+      }
+
+      let risingPoints = 0;
+      for (let i = 1; i < points; i++) {
+        if (data[i] >= data[i-1]) risingPoints++;
+      }
+      const positiveTrend = risingPoints > points/2;
+      const gradientFill = createGradient(ctx, ctx.canvas.getBoundingClientRect(), positiveTrend);
+
+      return {
+        label: positiveTrend ? 'Alcista (Ganancias)' : 'Bajista (Pérdidas)',
+        data: data,
+        borderColor: positiveTrend ? '#00ff00' : '#ff0000',
+        backgroundColor: gradientFill,
+        fill: true,
+        tension: 0.3,
+        pointRadius: 5,
+        pointHoverRadius: 8,
+        pointBackgroundColor: backgroundColors,
+        borderWidth: 2,
+        cubicInterpolationMode: 'monotone',
+        hoverBorderWidth: 3,
+        hoverBorderColor: positiveTrend ? '#00ff00' : '#ff0000',
+      };
+    }
+
+    const commonOptions = {
+      responsive: true,
+      animation: { duration: 600, easing: 'easeOutQuart' },
+      interaction: { mode: 'nearest', intersect: false },
+      plugins: {
+        legend: {
+          labels: { color: '#eee', font: { weight: 'bold', size: 14 } }
+        },
+        tooltip: {
+          backgroundColor: '#222',
+          titleColor: '#0f0',
+          bodyColor: '#eee',
+          borderColor: '#0f0',
+          borderWidth: 1,
+          mode: 'nearest',
+          intersect: false,
+          caretPadding: 10,
+          displayColors: true
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#aaa', maxRotation: 45, minRotation: 30, font: { size: 12 } },
+          grid: { color: 'rgba(255,255,255,0.05)', borderColor: '#444' },
+          border: { color: '#555', width: 1 }
+        },
+        y: {
+          ticks: { color: '#aaa', font: { size: 12 } },
+          grid: { color: 'rgba(255,255,255,0.08)', borderColor: '#444' },
+          border: { color: '#555', width: 1 },
+          beginAtZero: false,
+        }
+      }
+    };
+
+    const ctxDepositos = document.getElementById('chartDepositos').getContext('2d');
+    const ctxRetiros = document.getElementById('chartRetiros').getContext('2d');
+
+    let chartDepositos = new Chart(ctxDepositos, {
+      type: 'line',
+      data: {
+        labels: depositosData.map(d => d.fecha),
+        datasets: [buildDataset(depositosData, ctxDepositos)]
+      },
+      options: commonOptions
+    });
+
+    let chartRetiros = new Chart(ctxRetiros, {
+      type: 'line',
+      data: {
+        labels: retirosData.map(r => r.fecha),
+        datasets: [buildDataset(retirosData, ctxRetiros)]
+      },
+      options: commonOptions
+    });
+
+    setInterval(() => {
+      updateData(depositosData);
+      chartDepositos.data.labels = depositosData.map(d => d.fecha);
+      chartDepositos.data.datasets[0] = buildDataset(depositosData, ctxDepositos);
+      chartDepositos.update();
+
+      updateData(retirosData);
+      chartRetiros.data.labels = retirosData.map(r => r.fecha);
+      chartRetiros.data.datasets[0] = buildDataset(retirosData, ctxRetiros);
+      chartRetiros.update();
+    }, 1000);
+
+    function showRandomGain() {
+      let gainContainer = document.getElementById('gainPopup');
+      if (!gainContainer) {
+        gainContainer = document.createElement('div');
+        gainContainer.id = 'gainPopup';
+        document.body.appendChild(gainContainer);
+      }
+      gainContainer.style.opacity = '1';
+      gainContainer.style.pointerEvents = 'auto';
+
+      const users = ['Ana', 'Carlos', 'María', 'Luis', 'Sofía', 'David', 'Elena', 'Jorge'];
+      const user = users[Math.floor(Math.random() * users.length)];
+      const amount = (Math.random() * 20 + 5).toFixed(2);
+
+      gainContainer.textContent = `${user} ganó ${amount} USDT 🎉`;
+
+      setTimeout(() => {
+        gainContainer.style.opacity = '0';
+        gainContainer.style.pointerEvents = 'none';
+      }, 4000);
+    }
+
+    setInterval(showRandomGain, 15000);
+  </script>
+  {% endblock %}
+</body>
+</html>
+<!-- Al final de tu archivo HTML -->
+<script src="path_to_your_script.js"></script>

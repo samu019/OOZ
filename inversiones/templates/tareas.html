@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Mis Tareas{% endblock %}
+
+{% block content %}
+<h2 class="text-center mb-4">Tareas Diarias</h2>
+
+<div class="task-container">
+  {% for tarea in tareas %}
+    <div class="card mb-3 {% if not tarea.puede_repetir %}blocked{% endif %}">
+      <div class="card-body">
+        <h5 class="card-title">{{ tarea.task.titulo }}</h5>
+        <p>{{ tarea.task.descripcion }}</p>
+        <p>Recompensa: {{ tarea.task.recompensa }} monedas</p>
+
+        {% if tarea.completada and not tarea.puede_repetir %}
+          <p class="text-danger">Tarea ya completada. Espera 24h.</p>
+        {% else %}
+          <form method="post" action="{% url 'completar_tarea' tarea.id %}">
+            {% csrf_token %}
+            <button class="btn btn-success">Completar tarea</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

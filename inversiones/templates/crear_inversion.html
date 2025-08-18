@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Inversión - Plataforma de Inversiones{% endblock %}
+
+{% block content %}
+<style>
+  .create-investment-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .create-investment-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  form button.btn-primary {
+    padding: 12px;
+    background-color: #fbc02d;
+    color: #333;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+  }
+
+  form button.btn-primary:hover {
+    background-color: #f9a825;
+  }
+
+  a.btn-secondary {
+    display: inline-block;
+    margin-top: 20px;
+    color: #fbc02d;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  a.btn-secondary:hover {
+    text-decoration: underline;
+  }
+
+  ul.messages {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+  }
+
+  ul.messages li {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+
+  ul.messages li.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+
+  ul.messages li.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+
+  ul.messages li.warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+  }
+</style>
+
+<div class="create-investment-container">
+    <h1>Crear nueva inversión</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-primary">Crear inversión</button>
+    </form>
+
+    <a href="{% url 'dashboard' %}" class="btn-secondary">Volver al panel</a>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{% if message.level_tag %}{{ message.level_tag }}{% else %}info{% endif %}">
+            {{ message }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}

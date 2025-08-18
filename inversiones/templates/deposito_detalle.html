@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Pagar Depósito{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <div class="card p-4 shadow" style="background-color:#fff8e1; border-radius:15px; max-width:400px; margin:auto;">
+    <h3 class="text-center mb-3">Completar Depósito</h3>
+    <p class="text-center mb-3">Monto: <strong>{{ amount }} USDT</strong></p>
+    <a href="{{ payment_url }}" target="_blank" class="btn btn-success w-100 mb-3">Ir a Pagar</a>
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-dark w-100">Volver al Dashboard</a>
+  </div>
+</div>
+{% endblock %}

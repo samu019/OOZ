@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Estado de Retiros{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #fff7cc; /* fondo amarillo claro */
+  }
+
+  .retiros-container {
+    max-width: 700px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .retiros-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .retiro-item {
+    background-color: #f9f9f9;
+    border-left: 5px solid #ffc107;
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+  }
+
+  .retiro-item span {
+    font-weight: bold;
+  }
+
+  .no-retiros {
+    text-align: center;
+    font-style: italic;
+    color: #777;
+    margin-bottom: 20px;
+  }
+
+  .acciones {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+  }
+
+  .acciones a {
+    background: #ffc107;
+    color: #000;
+    padding: 10px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .acciones a:hover {
+    background: #ffb300;
+  }
+</style>
+
+<div class="retiros-container">
+  <h2>Retiros pendientes</h2>
+  {% if pendientes %}
+    {% for retiro in pendientes %}
+      <div class="retiro-item">
+        <span>Monto:</span> ${{ retiro.monto }}<br>
+        <span>Fecha:</span> {{ retiro.fecha_solicitud|date:"d M Y H:i" }}
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="no-retiros">No tienes retiros pendientes.</div>
+  {% endif %}
+
+  <h2>Retiros aprobados</h2>
+  {% if aprobados %}
+    {% for retiro in aprobados %}
+      <div class="retiro-item">
+        <span>Monto:</span> ${{ retiro.monto }}<br>
+        <span>Fecha:</span> {{ retiro.fecha_solicitud|date:"d M Y H:i" }}
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="no-retiros">No tienes retiros aprobados.</div>
+  {% endif %}
+
+  <div class="acciones">
+    <a href="{% url 'retirar' %}">Solicitar nuevo retiro</a>
+    <a href="{% url 'dashboard' %}">Volver al dashboard</a>
+  </div>
+</div>
+
+{% endblock %}

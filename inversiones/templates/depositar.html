@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Depósito{% endblock %}
+
+{% block content %}
+<div class="deposit-container">
+  <div class="deposit-card active">
+    <h2>💰 Balance Disponible</h2>
+    <p class="amount">$ 0.00</p>
+    <button class="next-btn" onclick="showStep(2)">Siguiente</button>
+  </div>
+
+  <div class="deposit-card">
+    <h2>🔗 Copia tu enlace de depósito</h2>
+    <input type="text" id="depositLink" class="form-control" value="https://plataforma.com/depositar/usuario123" readonly>
+    <button onclick="copiarEnlace()" class="copy-btn">📋 Copiar Enlace</button>
+    <button class="next-btn" onclick="showStep(3)">Siguiente</button>
+  </div>
+
+  <div class="deposit-card">
+    <h2>📷 Cargar captura de pago</h2>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="send-btn">Enviar Solicitud</button>
+    </form>
+  </div>
+
+  <div class="deposit-card">
+    <h2>📜 Historial de Procesamiento</h2>
+    <p>📅 16/07/2025 - Solicitud enviada</p>
+    <p>🔍 17/07/2025 - En revisión</p>
+    <button class="next-btn" onclick="showStep(5)">Siguiente</button>
+  </div>
+
+  <div class="deposit-card">
+    <h2>📢 Estado de tu Depósito</h2>
+    <p>✅ Depósito completado con éxito</p>
+  </div>
+</div>
+
+<script>
+function copiarEnlace() {
+  const enlace = document.getElementById("depositLink");
+  enlace.select();
+  enlace.setSelectionRange(0, 99999); // móviles
+  document.execCommand("copy");
+  alert("¡Enlace copiado!");
+}
+
+function showStep(step) {
+  const steps = document.querySelectorAll('.deposit-card');
+  steps.forEach((el, i) => {
+    el.classList.toggle('active', i === step - 1);
+  });
+}
+</script>
+
+<style>
+.deposit-card { display: none; }
+.deposit-card.active { display: block; }
+/* Agrega aquí estilos para recuadros, animaciones, etc. */
+</style>
+
+{% endblock %}
+{% if form_enviado %}
+<script>
+  // Ir automáticamente al paso 4 (Historial de Procesamiento)
+  document.addEventListener("DOMContentLoaded", function() {
+    showStep(4);
+  });
+</script>
+{% endif %}

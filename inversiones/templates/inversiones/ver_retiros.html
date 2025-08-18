@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Mis Retiros{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #fff8dc; /* amarillo suave */
+    }
+    .retiro-box {
+        max-width: 700px;
+        margin: 50px auto;
+        background-color: #ffffff;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+</style>
+
+<div class="retiro-box">
+    <h2 class="text-center mb-4">Historial de Retiros</h2>
+
+    <h4>🕓 Retiros Pendientes</h4>
+    {% if retiros_pendientes %}
+        <ul class="list-group mb-4">
+            {% for retiro in retiros_pendientes %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ retiro.amount }} USD a {{ retiro.wallet_address }}
+                    <span class="badge bg-warning text-dark">{{ retiro.request_date|date:"d M Y - H:i" }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No tienes retiros pendientes.</p>
+    {% endif %}
+
+    <h4 class="mt-4">✅ Retiros Aprobados</h4>
+    {% if retiros_aprobados %}
+        <ul class="list-group mb-4">
+            {% for retiro in retiros_aprobados %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ retiro.amount }} USD a {{ retiro.wallet_address }}
+                    <span class="badge bg-success text-white">{{ retiro.processed_date|date:"d M Y - H:i" }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No tienes retiros aprobados.</p>
+    {% endif %}
+
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{% url 'withdraw' %}" class="btn btn-primary">💸 Solicitar nuevo retiro</a>
+        <a href="{% url 'home' %}" class="btn btn-secondary">← Volver al dashboard</a>
+    </div>
+</div>
+{% endblock %}

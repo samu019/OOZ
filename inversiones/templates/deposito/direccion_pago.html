@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Detalles de la Dirección de Pago</h2>
+
+  <p>Para completar tu depósito, por favor utiliza la siguiente dirección de pago:</p>
+  <div class="input-group">
+    <input type="text" class="form-control" id="direccionPago" value="{{ direccion_pago }}" readonly>
+    <button class="btn btn-primary" onclick="copyAddress()">Copiar Dirección</button>
+  </div>
+
+  <p>Una vez que completes el pago, vuelve a la plataforma para actualizar el estado de tu depósito.</p>
+
+  <div class="d-flex justify-content-end mt-4">
+    <a href="{% url 'subir_pago' deposito.id %}" class="btn btn-primary btn-lg">Siguiente &gt;</a>
+  </div>
+
+  <script>
+    function copyAddress() {
+      var copyText = document.getElementById("direccionPago");
+      copyText.select();
+      copyText.setSelectionRange(0, 99999); // Para dispositivos móviles
+      document.execCommand("copy");
+      alert("Dirección copiada al portapapeles!");
+    }
+  </script>
+{% endblock %}

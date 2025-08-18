@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}🎮 Juegos para ganar recompensas{% endblock %}
+
+{% block content %}
+<style>
+  .card-img-ajustada {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .card-img-ajustada {
+      height: 150px;
+    }
+  }
+</style>
+
+<div class="container mt-5 text-center">
+  <h1 class="mb-4 text-warning">🎮 Juegos para ganar recompensas</h1>
+  Tu balance actual es: <strong>${{ balance|default:"0.00"|floatformat:2 }}</strong>
+
+  {% if juegos %}
+    <div class="row justify-content-center">
+      {% for juego in juegos %}
+        <div class="col-md-4 col-sm-6 mb-4">
+          <div class="card bg-light shadow-lg border-0">
+            <img src="{% static 'img/'|add:juego.imagen %}" class="card-img-ajustada" alt="{{ juego.nombre }}">
+            <div class="card-body text-center">
+              <h5 class="card-title text-dark fw-bold">{{ juego.nombre }}</h5>
+              <a href="{% url 'iniciar_juego' juego.id %}" class="btn btn-warning text-dark fw-bold">Invertir para jugar</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-warning">¡Aún no has comenzado a jugar! Empieza una partida para invertir y ganar.</p>
+  {% endif %}
+</div>
+{% endblock %}

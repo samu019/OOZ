@@ -1,0 +1,800 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Plataforma de Inversiones{% endblock %}
+
+{% block content %}
+<style>
+  /* Fondo global con gradiente animado */
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 0.4s ease, color 0.4s ease;
+    min-height: 100vh;
+  }
+
+  body {
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    color: white;
+  }
+
+  /* Contenedor centralizado con sombra y borde redondeado */
+  .dashboard-wrapper {
+    max-width: 1100px;
+    margin: 30px auto;
+    background-color: #1e293b;
+    border-radius: 15px;
+    padding: 30px 40px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+    box-sizing: border-box;
+    animation: fadeIn 0.8s ease forwards;
+  }
+
+  /* Título principal */
+  .dashboard-title {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ffffff;
+  }
+
+  /* Grid para botones principales */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+  }
+
+  /* Tarjetas botones principales */
+  .dashboard-card {
+    background-color: #273549;
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(255, 255, 255, 0.1);
+  }
+
+  .dashboard-card i,
+  .dashboard-icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #38bdf8;
+  }
+
+  /* Sección título con barra lateral */
+  .section-title {
+    border-left: 4px solid #ffd700;
+    padding-left: 10px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 1.4rem;
+  }
+
+  /* Caja iconos accesos rápidos */
+  .dashboard-icon-box {
+    background-color: #1e2329;
+    border: 1px solid #2b3139;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    color: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    user-select: none;
+    cursor: pointer;
+  }
+
+  .dashboard-icon-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 10px rgba(255,255,255,0.1);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .dashboard-wrapper {
+      padding: 20px 15px;
+      margin: 15px;
+    }
+
+    .dashboard-title {
+      font-size: 1.5rem;
+    }
+    .dashboard-card i, .dashboard-icon {
+      font-size: 1.5rem;
+    }
+    .dashboard-icon-box {
+      font-size: 0.9rem;
+      padding: 15px;
+    }
+  }
+
+  /* Animación fade-in */
+  @keyframes fadeIn {
+    from {opacity: 0; transform: translateY(15px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+
+  /* Botón emoji en círculo para modo claro/oscuro */
+  .emoji-circle {
+    display: inline-block;
+    font-size: 1.5rem;
+    width: 2.8rem;
+    height: 2.8rem;
+    line-height: 2.8rem;
+    text-align: center;
+    border-radius: 50%;
+    border: 2px solid white;
+    user-select: none;
+    transition: background-color 0.3s, color 0.3s;
+    cursor: pointer;
+    background-color: transparent;
+    color: white;
+  }
+
+  /* Alertas */
+  .alert-warning {
+    background-color: #facc15;
+    color: #1f2937;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .alert-secondary {
+    background-color: #64748b;
+    color: #f8fafc;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  /* Estadísticas pequeñas y animadas */
+  .estadisticas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+    justify-items: center;
+  }
+
+  .estadistica-card {
+    background-color: #facc15;
+    border-radius: 15px;
+    padding: 20px;
+    color: #1e293b;
+    transition: transform 0.5s ease, box-shadow 0.3s ease;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    width: 140px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    perspective: 600px;
+  }
+
+  .estadistica-card:hover {
+    transform: translateY(-6px) scale(1.05);
+    box-shadow: 0 10px 18px rgba(0,0,0,0.2);
+  }
+
+  .estadistica-icon {
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+    display: inline-block;
+    transition: transform 0.6s ease;
+    backface-visibility: hidden;
+  }
+
+  /* Animación giro 3D */
+  .spin-animation {
+    animation: spinY 0.8s linear;
+  }
+
+  @keyframes spinY {
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
+  }
+
+  /* ====== MODO CLARO ====== */
+  html.light-mode, body.light-mode {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+  }
+
+  html.light-mode .dashboard-wrapper,
+  body.light-mode .dashboard-wrapper {
+    background-color: #e2e8f0 !important;
+    box-shadow: 0 0 15px rgba(100, 116, 139, 0.4);
+  }
+
+  html.light-mode .dashboard-card,
+  body.light-mode .dashboard-card {
+    background-color: #cbd5e1 !important;
+    color: #0f172a !important;
+  }
+
+  html.light-mode .dashboard-card:hover,
+  body.light-mode .dashboard-card:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+  }
+
+  html.light-mode .section-title,
+  body.light-mode .section-title {
+    color: #0f172a !important;
+  }
+
+  html.light-mode .dashboard-icon-box,
+  body.light-mode .dashboard-icon-box {
+    background-color: #cbd5e1 !important;
+    border-color: #94a3b8 !important;
+    color: #0f172a !important;
+  }
+
+  html.light-mode .dashboard-icon-box:hover,
+  body.light-mode .dashboard-icon-box:hover {
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  html.light-mode a.dashboard-card,
+  body.light-mode a.dashboard-card {
+    color: #0f172a !important;
+  }
+
+  html.light-mode .alert-warning,
+  body.light-mode .alert-warning {
+    background-color: #fde68a !important;
+    color: #92400e !important;
+  }
+
+  html.light-mode .alert-secondary,
+  body.light-mode .alert-secondary {
+    background-color: #94a3b8 !important;
+    color: #0f172a !important;
+  }
+
+  html.light-mode .estadistica-card,
+  body.light-mode .estadistica-card {
+    background-color: #fde68a;
+    color: #0f172a;
+  }
+
+  html.light-mode .emoji-circle,
+  body.light-mode .emoji-circle {
+    border-color: #0f172a;
+    color: #0f172a;
+    background-color: #fde68a;
+  }
+</style>
+
+<!-- Botón alternar modo con emoji en círculo -->
+<div style="text-align:center; margin-bottom: 40px;">
+  <button id="toggleThemeBtn" class="btn btn-outline-light" aria-pressed="false" aria-label="Cambiar a modo claro">
+    <span class="emoji-circle" id="themeIcon">🌙</span> <!-- Asegúrate de que el emoji esté aquí -->
+  </button>
+</div>
+
+
+
+<div class="dashboard-wrapper" id="dashboard-wrapper">
+  <h1 class="dashboard-title">Bienvenido {{ user.username }}</h1>
+
+  <!-- Botones principales -->
+  <div class="card-grid">
+    <a href="{% url 'perfil' %}" class="dashboard-card" title="Mi Perfil">
+      <i class="fas fa-user-circle"></i>
+      <div>Mi Perfil</div>
+    </a>
+    <a href="{% url 'comprar_vip' %}" class="dashboard-card" title="Tareas">
+      <i class="fas fa-tasks"></i>
+      <div>Tareas</div>
+    </a>
+    <a href="{% url 'estadisticas' %}" class="dashboard-card" title="Estadísticas">
+      <i class="fas fa-chart-line"></i>
+      <div>Estadísticas</div>
+    </a>
+    <a href="{% url 'soporte' %}" class="dashboard-card" title="Soporte">
+      <i class="fas fa-headset"></i>
+      <div>Soporte</div>
+    </a>
+    <a href="{% url 'finanzas' %}" class="dashboard-card" title="Finanzas">
+      <i class="fas fa-dollar-sign"></i>
+      <div>Finanzas</div>
+    </a>
+    <a href="{% url 'configuracion' %}" class="dashboard-card" title="Configuración">
+      <i class="fas fa-cog"></i>
+      <div>Configuración</div>
+    </a>
+  </div>
+
+  <!-- Accesos Rápidos -->
+  <div class="section-title">🚀 Accesos Rápidos</div>
+  <div class="row g-4">
+    <div class="col-6 col-md-3">
+      <a href="{% url 'tareas_diarias' %}" class="text-decoration-none">
+        <div class="dashboard-icon-box" title="Tareas Diarias">
+          <div class="dashboard-icon">🗂️</div>
+          <div>Tareas Diarias</div>
+        </div>
+      </a>
+    </div>
+    <div class="col-6 col-md-3">
+      <a href="{% url 'historial_tareas' %}" class="text-decoration-none">
+        <div class="dashboard-icon-box" title="Historial de Tareas">
+          <div class="dashboard-icon">📜</div>
+          <div>Historial Tareas</div>
+        </div>
+      </a>
+    </div>
+    <div class="col-6 col-md-3">
+      <a href="{% url 'invertir' %}" class="text-decoration-none">
+        <div class="dashboard-icon-box" title="Invertir">
+          <div class="dashboard-icon">💰</div>
+          <div>Invertir</div>
+        </div>
+      </a>
+    </div>
+    <div class="col-6 col-md-3">
+      <a href="{% url 'perfil' %}" class="text-decoration-none">
+        <div class="dashboard-icon-box" title="Mi Perfil">
+          <div class="dashboard-icon">👤</div>
+          <div>Mi Perfil</div>
+        </div>
+      </a>
+    </div>
+    <div class="col-6 col-md-3">
+      <a href="{% url 'mis_referidos' %}" class="text-decoration-none">
+        <div class="dashboard-icon-box" title="Referidos">
+          <div class="dashboard-icon">🤝</div>
+          <div>Referidos</div>
+        </div>
+      </a>
+    </div>
+    <div class="col-6 col-md-3">
+      <a href="{% url 'depositar' %}" class="text-decoration-none">
+        <div class="dashboard-icon-box" title="Depositar Fondos">
+          <div class="dashboard-icon">💵</div>
+          <div>Depositar</div>
+        </div>
+      </a>
+    </div>
+    <div class="col-6 col-md-3">
+      <a href="{% url 'retirar' %}" class="text-decoration-none">
+        <div class="dashboard-icon-box" title="Retirar Fondos">
+          <div class="dashboard-icon">🏧</div>
+          <div>Retirar</div>
+        </div>
+      </a>
+    </div>
+
+    {% if deposito_pendiente %}
+    <div class="col-6 col-md-3">
+      <a href="{% url 'finalizar_deposito' deposito_pendiente.id %}" class="text-decoration-none">
+        <div class="dashboard-icon-box" title="Finalizar Depósito">
+          <div class="dashboard-icon">✔️</div>
+          <div>Finalizar Depósito</div>
+        </div>
+      </a>
+    </div>
+    {% endif %}
+
+    {% if deposito_pendiente and deposito_pendiente.status != 'pending' %}
+    <div class="col-6 col-md-3">
+      <a href="{% url 'informacion_deposito' deposito_pendiente.id %}" class="text-decoration-none">
+        <div class="dashboard-icon-box" title="Ver Información del Depósito">
+          <div class="dashboard-icon">📊</div>
+          <div>Información Depósito</div>
+        </div>
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Tareas -->
+{% if vip_level %}
+  <div class="section-title">🎖 Nivel VIP: {{ vip_level.nombre }}</div>
+  <p>✅ Tareas hoy: {{ tareas_completadas_hoy }} / {{ tareas_disponibles }}</p>
+
+  {% if tareas %}
+    <div class="row g-4">
+      {% for tarea in tareas %}
+        <div class="col-md-4">
+          <div class="card h-100 {% if tarea.completada %}border-success bg-light{% endif %}">
+            <div class="card-body">
+              <h6>{{ tarea.titulo }}</h6>
+              <p>{{ tarea.descripcion }}</p>
+              <p><strong>💵 Recompensa:</strong> {{ tarea.recompensa }} monedas</p>
+
+              {% if not tarea.desbloqueada %}
+                <p class="text-muted">🔒 Bloqueada. Activa tu VIP.</p>
+              {% elif tarea.completada %}
+                <p class="text-success">✅ Completada el {{ tarea.fecha_completada|date:"d/m/Y H:i" }}</p>
+              {% elif tarea.puede_realizar %}
+                <form method="post" action="{% url 'realizar_tarea' tarea.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-success btn-sm w-100 mt-2">✅ Realizar tarea</button>
+                </form>
+              {% else %}
+                <p class="text-muted">⏳ Espera 24h para repetir.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="mt-3">No hay tareas disponibles hoy.</p>
+  {% endif %}
+{% else %}
+  <div class="alert alert-warning text-center mt-5">
+    <i class="fas fa-exclamation-circle"></i> ❗ No tienes un plan VIP activo. <a href="{% url 'comprar_vip' %}">Compra uno aquí</a> para acceder a tareas y recompensas.
+  </div>
+{% endif %}
+
+
+  <!-- Estadísticas -->
+  <div class="section-title">📊 Estadísticas</div>
+  <div class="estadisticas-grid" role="list">
+    <div class="estadistica-card" tabindex="0" role="button" aria-pressed="false" title="Saldo Total">
+      <div class="estadistica-icon" aria-hidden="true">💵</div>
+      <h5 class="card-title">Saldo Total</h5>
+      <p class="fs-5">${{ total_actual|floatformat:2 }}</p>
+    </div>
+    <div class="estadistica-card" tabindex="0" role="button" aria-pressed="false" title="Monto Invertido Activo">
+  <div class="estadistica-icon" aria-hidden="true">📊</div>
+  <h5 class="card-title">Monto Invertido Activo</h5>
+  <p class="fs-5">${{ total_inversiones_activas|floatformat:2 }}</p>
+</div>
+
+    <div class="estadistica-card" tabindex="0" role="button" aria-pressed="false" title="Finalizadas">
+      <div class="estadistica-icon" aria-hidden="true">📉</div>
+      <h5 class="card-title">Finalizadas</h5>
+      <p class="fs-5">{{ cantidad_finalizadas }}</p>
+    </div>
+  </div>
+
+  <!-- Gráficas Financieras -->
+  <div class="section-title mt-5">📈 Gráficas Financieras</div>
+  <div class="card p-4 mb-5 graficas-card">
+    <canvas id="chartDepositos" height="100"></canvas>
+    <canvas id="chartRetiros" height="100" class="mt-4"></canvas>
+  </div>
+
+<!-- Juegos Activos -->
+{% if inversiones %}
+  <div class="section-title">🎮 Partidas Activas</div>
+  <div class="table-responsive mb-5 inversiones-activas-wrapper">
+    <table class="table inversiones-activas-table">
+      <thead>
+        <tr>
+          <th>Monto Apostado</th>
+          <th>Fecha de Juego</th>
+          <th>Recompensa Esperada</th>
+          <th>Valor Actual</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for inv in inversiones %}
+          <tr class="{% if not inv.activo %}finalizada{% endif %}">
+            <td>${{ inv.amount|floatformat:2 }}</td>
+            <td>{{ inv.fecha_inversion|date:"d/m/Y" }}</td>
+            <td>{{ inv.profitability|floatformat:2 }}%</td>
+            <td>${{ inv.current_value|floatformat:2 }}</td>
+            <td>
+              {% if inv.activo %}
+                <form method="post" action="{% url 'retirar_inversion' inv.id %}" onsubmit="return confirm('¿Terminar esta partida?')">
+                  {% csrf_token %}
+                  <button type="submit" class="btn-retirar">Finalizar Juego</button>
+                </form>
+              {% else %}
+                <span class="status-finalizada">Finalizada</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" class="text-end total-label">Total Apostado:</td>
+          <td colspan="2" class="total-valor">${{ total_actual|floatformat:2 }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-primary text-center p-4 rounded-3 shadow-sm mb-4">
+    🎮 <strong>Juegos para ganar recompensas</strong><br>
+    ¡Aún no has comenzado a jugar! Participa en una partida para obtener beneficios.<br><br>
+    <a href="{% url 'iniciar_juego' juego_id=1 %}" class="btn btn-success">Comenzar a jugar</a>
+  </div>
+{% endif %}
+
+<h1 class="dashboard-title">Bienvenido {{ user.username }}</h1>
+
+{% if juegos_restantes is not none and max_juegos_dia is not none %}
+  <div class="alert alert-warning text-center mb-4" role="alert" aria-live="polite" aria-atomic="true">
+    🎲 Puedes jugar <strong>{{ juegos_restantes }}</strong> veces hoy (máximo {{ max_juegos_dia }}).
+  </div>
+{% endif %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleThemeBtn = document.getElementById('toggleThemeBtn');
+    const themeIcon = document.getElementById('themeIcon');
+
+    // Verificar si ya existe un tema guardado en LocalStorage
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme) {
+      document.body.classList.add(currentTheme);
+      themeIcon.textContent = currentTheme === 'dark-mode' ? '🌑' : '🌙';
+    } else {
+      // Establecer tema claro por defecto
+      document.body.classList.add('light-mode');
+    }
+
+    // Alternar el tema al presionar el botón
+    toggleThemeBtn.addEventListener('click', () => {
+      // Alternar entre las clases 'dark-mode' y 'light-mode'
+      document.body.classList.toggle('dark-mode');
+      document.body.classList.toggle('light-mode');
+
+      // Cambiar el icono del botón
+      if (document.body.classList.contains('dark-mode')) {
+        themeIcon.textContent = '🌑'; // Modo oscuro
+        localStorage.setItem('theme', 'dark-mode');
+      } else {
+        themeIcon.textContent = '🌙'; // Modo claro
+        localStorage.setItem('theme', 'light-mode');
+      }
+    });
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Datos iniciales simulados o recibidos
+  let depositosData = JSON.parse('{{ depositos_chart_json|default:"[]"|escapejs }}');
+  let retirosData = JSON.parse('{{ retiros_chart_json|default:"[]"|escapejs }}');
+
+  // Si los datos no están disponibles, generamos datos simulados
+  if (!depositosData.length) {
+    const now = new Date();
+    depositosData = Array.from({length: 20}, (_, i) => {
+      const time = new Date(now.getTime() - (19 - i) * 60000);
+      return { fecha: time.getHours().toString().padStart(2,'0') + ':' + time.getMinutes().toString().padStart(2,'0'), total: 100 + Math.random() * 50 };
+    });
+  }
+  if (!retirosData.length) {
+    const now = new Date();
+    retirosData = Array.from({length: 20}, (_, i) => {
+      const time = new Date(now.getTime() - (19 - i) * 60000);
+      return { fecha: time.getHours().toString().padStart(2,'0') + ':' + time.getMinutes().toString().padStart(2,'0'), total: 50 + Math.random() * 30 };
+    });
+  }
+
+  // Función para generar valores suaves con tendencia
+  function generateSmoothValue(lastValue, lastChange) {
+    const noise = (Math.random() - 0.5) * 2;
+    let change = lastChange * 0.7 + noise * 1.5;
+    let newValue = lastValue + change;
+    if (newValue < 0) newValue = 0;
+    return {newValue: Math.round(newValue * 100)/100, newChange: change};
+  }
+
+  // Actualización de los datos de los gráficos
+  function updateData(dataArray, lastChangeRef) {
+    const now = new Date();
+    const timeLabel = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
+    const lastTotal = dataArray[dataArray.length - 1].total;
+    const {newValue, newChange} = generateSmoothValue(lastTotal, lastChangeRef.value);
+
+    lastChangeRef.value = newChange;
+    dataArray.shift();
+    dataArray.push({ fecha: timeLabel, total: newValue });
+  }
+
+  // Generación de gradientes
+  function createGradient(ctx, area, positive=true) {
+    const grad = ctx.createLinearGradient(0, area.bottom, 0, area.top);
+    if (positive) {
+      grad.addColorStop(0, 'rgba(72, 187, 120, 0.15)');
+      grad.addColorStop(1, 'rgba(72, 187, 120, 0.4)');
+    } else {
+      grad.addColorStop(0, 'rgba(240, 71, 71, 0.15)');
+      grad.addColorStop(1, 'rgba(240, 71, 71, 0.4)');
+    }
+    return grad;
+  }
+
+  // Función para construir los datasets de los gráficos
+  function buildDataset(dataArray, ctx) {
+    const data = dataArray.map(d => d.total);
+    const points = data.length;
+
+    let borderColors = [];
+    let backgroundColors = [];
+    let trendPoints = [];
+
+    for (let i = 0; i < points; i++) {
+      if (i === 0) {
+        borderColors.push('#48bb78');
+        backgroundColors.push('rgba(72, 187, 120, 0.3)');
+        trendPoints.push(null);
+      } else {
+        if (data[i] > data[i-1]) {
+          borderColors.push('#2f855a');
+          backgroundColors.push('rgba(72, 187, 120, 0.2)');
+          trendPoints.push('up');
+        } else if (data[i] < data[i-1]) {
+          borderColors.push('#f04747');
+          backgroundColors.push('rgba(240, 71, 71, 0.2)');
+          trendPoints.push('down');
+        } else {
+          borderColors.push('#a0aec0');
+          backgroundColors.push('rgba(160, 174, 192, 0.2)');
+          trendPoints.push('flat');
+        }
+      }
+    }
+
+    const risingPoints = trendPoints.filter(t => t === 'up').length;
+    const positiveTrend = risingPoints > points/2;
+    const gradientFill = createGradient(ctx, ctx.canvas.getBoundingClientRect(), positiveTrend);
+
+    return {
+      label: positiveTrend ? 'Tendencia Alcista' : 'Tendencia Bajista',
+      data: data,
+      borderColor: positiveTrend ? '#2f855a' : '#f04747',
+      backgroundColor: gradientFill,
+      fill: true,
+      tension: 0.35,
+      pointRadius: 6,
+      pointHoverRadius: 10,
+      pointBackgroundColor: backgroundColors,
+      borderWidth: 3,
+      cubicInterpolationMode: 'monotone',
+      hoverBorderWidth: 4,
+      hoverBorderColor: positiveTrend ? '#276749' : '#c53030',
+      trendPoints: trendPoints,
+    };
+  }
+
+  // Plugin para flechas en los gráficos
+  const arrowsPlugin = {
+    id: 'arrowsPlugin',
+    afterDatasetsDraw(chart) {
+      const {ctx, chartArea: {top, bottom, left, right}, scales: {x, y}} = chart;
+
+      chart.data.datasets.forEach((dataset, datasetIndex) => {
+        const meta = chart.getDatasetMeta(datasetIndex);
+        if (!dataset.trendPoints) return;
+
+        meta.data.forEach((point, index) => {
+          if (index === 0) return;
+          const trend = dataset.trendPoints[index];
+          if (!trend || trend === 'flat') return;
+
+          const xPos = point.x;
+          const yPos = point.y;
+
+          ctx.save();
+          ctx.beginPath();
+
+          if (trend === 'up') {
+            ctx.strokeStyle = '#38a169';
+            ctx.fillStyle = '#38a169';
+            ctx.lineWidth = 2;
+            ctx.moveTo(xPos, yPos + 10);
+            ctx.lineTo(xPos, yPos - 6);
+            ctx.lineTo(xPos - 5, yPos - 1);
+            ctx.moveTo(xPos, yPos - 6);
+            ctx.lineTo(xPos + 5, yPos - 1);
+          } else if (trend === 'down') {
+            ctx.strokeStyle = '#e53e3e';
+            ctx.fillStyle = '#e53e3e';
+            ctx.lineWidth = 2;
+            ctx.moveTo(xPos, yPos - 10);
+            ctx.lineTo(xPos, yPos + 6);
+            ctx.lineTo(xPos - 5, yPos + 1);
+            ctx.moveTo(xPos, yPos + 6);
+            ctx.lineTo(xPos + 5, yPos + 1);
+          }
+
+          ctx.stroke();
+          ctx.restore();
+        });
+      });
+    }
+  };
+
+  // Configuración común para ambos gráficos
+  const commonOptions = {
+    responsive: true,
+    animation: { duration: 1200, easing: 'easeInOutQuad' },
+    interaction: { mode: 'nearest', intersect: false },
+    plugins: {
+      legend: { labels: { color: '#eee', font: { weight: 'bold', size: 14 } } },
+      tooltip: {
+        backgroundColor: '#222', titleColor: '#48bb78', bodyColor: '#eee',
+        borderColor: '#48bb78', borderWidth: 1, mode: 'nearest', intersect: false, caretPadding: 10,
+        displayColors: true
+      },
+      arrowsPlugin: {}
+    },
+    scales: {
+      x: {
+        ticks: { color: '#aaa', maxRotation: 45, minRotation: 30, font: { size: 12 } },
+        grid: { color: 'rgba(255,255,255,0.05)', borderColor: '#444' },
+        border: { color: '#555', width: 1 }
+      },
+      y: {
+        ticks: { color: '#aaa', font: { size: 12 } },
+        grid: { color: 'rgba(255,255,255,0.08)', borderColor: '#444' },
+        border: { color: '#555', width: 1 },
+        beginAtZero: false,
+      }
+    }
+  };
+
+  const ctxDepositos = document.getElementById('chartDepositos').getContext('2d');
+  const ctxRetiros = document.getElementById('chartRetiros').getContext('2d');
+
+  // Configuración de los gráficos
+  let chartDepositos = new Chart(ctxDepositos, {
+    type: 'line',
+    data: {
+      labels: depositosData.map(d => d.fecha),
+      datasets: [buildDataset(depositosData, ctxDepositos)]
+    },
+    options: commonOptions,
+    plugins: [arrowsPlugin]
+  });
+
+  let chartRetiros = new Chart(ctxRetiros, {
+    type: 'line',
+    data: {
+      labels: retirosData.map(r => r.fecha),
+      datasets: [buildDataset(retirosData, ctxRetiros)]
+    },
+    options: commonOptions,
+    plugins: [arrowsPlugin]
+  });
+
+  // Actualización periódica de los gráficos cada 3 segundos
+  setInterval(() => {
+    updateData(depositosData, { value: 0 });
+    chartDepositos.data.labels = depositosData.map(d => d.fecha);
+    chartDepositos.data.datasets[0] = buildDataset(depositosData, ctxDepositos);
+    chartDepositos.update();
+
+    updateData(retirosData, { value: 0 });
+    chartRetiros.data.labels = retirosData.map(r => r.fecha);
+    chartRetiros.data.datasets[0] = buildDataset(retirosData, ctxRetiros);
+    chartRetiros.update();
+  }, 3000);
+</script>
+
+<!-- Contenedor de Notificaciones -->
+<div id="notificaciones-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
+
+{% endblock %}

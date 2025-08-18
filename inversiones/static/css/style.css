@@ -1,0 +1,821 @@
+/* ========== RESET GENERAL ========== */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fafafa;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* ========== ANIMACIONES ========== */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes fadeInPanel {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== CONTENEDOR DE CUADROS (3 columnas por defecto) ========== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  padding: 20px;
+  max-width: 1100px;
+  margin: 0 auto 40px;
+}
+
+/* ========== TARJETA ESTADÍSTICA GENERAL ========== */
+.stat-card,
+.panel-card {
+  background: linear-gradient(to right, #f3e5f5, #e1bee7);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(171, 71, 188, 0.25);
+  color: #4a148c;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  opacity: 0;
+  animation: fadeInUp 0.6s ease forwards;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 160px;
+  height: auto;
+  cursor: default;
+  user-select: none;
+}
+
+.stat-card:hover,
+.panel-card:hover {
+  transform: translateY(-6px) scale(1.04);
+  box-shadow: 0 12px 24px rgba(126, 87, 194, 0.45);
+  cursor: pointer;
+}
+
+/* Accesibilidad - foco teclado */
+.stat-card:focus-within,
+.stat-card:focus {
+  outline: 3px solid #7e57c2;
+  outline-offset: 3px;
+  box-shadow: 0 0 12px 3px rgba(126, 87, 194, 0.7);
+}
+
+/* Animación escalonada para las tarjetas */
+.stat-card:nth-child(1) { animation-delay: 0.1s; }
+.stat-card:nth-child(2) { animation-delay: 0.2s; }
+.stat-card:nth-child(3) { animation-delay: 0.3s; }
+.stat-card:nth-child(4) { animation-delay: 0.4s; }
+.stat-card:nth-child(5) { animation-delay: 0.5s; }
+.stat-card:nth-child(6) { animation-delay: 0.6s; }
+
+/* ========== CONTENIDO INTERNO DE LAS TARJETAS ========== */
+.stat-card h3 {
+  font-size: 1.5rem;
+  margin: 0 0 8px 0;
+  user-select: text;
+}
+
+.stat-card p {
+  font-size: 0.9rem;
+  margin: 0;
+  user-select: text;
+}
+
+/* Gráficos dentro de tarjetas */
+.stat-card canvas {
+  max-height: 70px;
+  width: 100% !important;
+  margin-top: 12px;
+  user-select: none;
+}
+
+/* ========== PANEL VIP - TAREAS ========== */
+.panel-vip-tareas {
+  background: #f3e5f5;
+  padding: 20px;
+  border-radius: 12px;
+  color: #4a148c;
+  font-weight: 600;
+  box-shadow: 0 4px 8px rgba(171, 71, 188, 0.2);
+  max-width: 480px;
+  margin-bottom: 30px;
+  font-size: 1rem;
+  user-select: none;
+}
+
+.panel-vip-tareas p {
+  margin: 0.3em 0;
+}
+
+/* Enlace historial tareas */
+.panel-card a.historial-link {
+  color: #303f9f;
+  text-decoration: none;
+  font-weight: bold;
+  user-select: text;
+}
+
+.panel-card a.historial-link:hover {
+  text-decoration: underline;
+  color: #1a237e;
+}
+
+/* ========== BOTONES / ACCIONES ========== */
+.acciones-verticales-rec {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+  max-width: 700px;
+  margin-bottom: 40px;
+}
+
+.accion-btn {
+  display: block;
+  padding: 14px 20px;
+  background-color: #ce93d8;
+  color: white;
+  font-weight: 700;
+  text-align: center;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(171, 71, 188, 0.3);
+  user-select: none;
+}
+
+.accion-btn:hover,
+.accion-btn:focus {
+  background-color: #ab47bc;
+  transform: translateY(-3px) scale(1.02);
+  outline: none;
+  cursor: pointer;
+}
+
+/* ========== TABLA FINANCIERA ========== */
+.investment-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.investment-table th,
+.investment-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+.investment-table thead {
+  background-color: #f3e5f5;
+  font-weight: bold;
+}
+
+.investment-table tfoot td {
+  font-weight: 700;
+  font-size: 16px;
+  background-color: #f3e5f5;
+  color: #4a148c;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 992px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .stat-card,
+  .panel-card {
+    height: auto;
+    padding: 16px;
+    font-size: 0.95rem;
+  }
+  .acciones-verticales-rec {
+    max-width: 100%;
+  }
+}
+
+/* ========== CURSOR Y USABILIDAD ========== */
+.stat-card,
+.panel-card,
+.accion-btn {
+  -webkit-tap-highlight-color: transparent; /* elimina highlight en móvil */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* ========== CONTENEDOR PRINCIPAL ========== */
+.main-panel-container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 30px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  animation: fadeInPanel 0.6s ease-in-out;
+}
+
+/* ========== PANELES DE DEPÓSITOS ========== */
+.deposit-panel {
+  max-width: 600px;
+  margin: auto;
+  padding: 30px;
+  background: #f7f9fc;
+  border-radius: 16px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  animation: fadeIn 1s ease-in-out;
+}
+
+.deposit-step {
+  display: none;
+}
+
+.deposit-step.active {
+  display: block;
+}
+
+.balance-box {
+  font-size: 22px;
+  padding: 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #7dd3fc, #38bdf8);
+  color: white;
+  border-radius: 12px;
+  animation: pulse 2s infinite;
+}
+
+.balance-amount {
+  font-size: 28px;
+  font-weight: bold;
+  display: block;
+  margin-top: 10px;
+}
+
+.box {
+  background: white;
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.copy-section {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.copy-section input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.copy-section button {
+  padding: 10px 15px;
+  background-color: #4ade80;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.submit-btn,
+.next-btn {
+  margin-top: 20px;
+  background-color: #6366f1;
+  color: white;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.submit-btn:hover,
+.next-btn:hover {
+  background-color: #4f46e5;
+}
+
+.final-status .status {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.status.success {
+  color: #10b981;
+}
+
+/* ========== ESTADÍSTICAS AMARILLO CLARO ========== */
+.estadistica-card {
+  background-color: #facc15;
+  border-radius: 15px;
+  padding: 15px;
+  color: #1e293b;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  cursor: default;
+}
+
+.estadistica-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.estadistica-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  transition: transform 0.6s ease;
+  display: inline-block;
+  user-select: none;
+  cursor: pointer;
+}
+
+.estadistica-icon:hover,
+.estadistica-icon:active {
+  animation: spin 0.6s linear;
+}
+
+/* ========== TARJETA DE GRÁFICAS ========== */
+.graficas-card {
+  background-color: #f0f9ff;
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(3, 105, 161, 0.2);
+  transition: box-shadow 0.3s ease;
+  padding: 20px;
+  margin-bottom: 40px;
+}
+
+.graficas-card:hover {
+  box-shadow: 0 10px 25px rgba(3, 105, 161, 0.35);
+}
+
+/* ========== SECCIÓN TÍTULO ========== */
+.section-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #343a40;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 992px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .stat-card,
+  .panel-card,
+  .estadistica-card {
+    height: auto;
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+  .acciones-verticales-rec {
+    max-width: 100%;
+  }
+  .estadistica-icon {
+    font-size: 1.5rem;
+  }
+}
+/* Contenedor para estadísticas en grid */
+.estadisticas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 20px;
+  justify-items: center;
+}
+
+/* Tarjeta estadística cuadrada y centrada */
+.estadistica-card {
+  background-color: #facc15;
+  border-radius: 15px;
+  padding: 20px;
+  color: #1e293b;
+  width: 120px;
+  height: 120px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeInUp 0.7s ease forwards;
+  perspective: 600px; /* para animación 3D */
+}
+
+.estadistica-card:hover {
+  box-shadow: 0 10px 18px rgba(0,0,0,0.2);
+}
+
+/* Icono centrado y tamaño */
+.estadistica-icon {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+  display: inline-block;
+  transition: transform 0.6s ease;
+  backface-visibility: hidden;
+}
+
+/* Animación de entrada */
+@keyframes fadeInUp {
+  0% {opacity: 0; transform: translateY(15px);}
+  100% {opacity: 1; transform: translateY(0);}
+}
+
+/* Animación giro 3D */
+@keyframes spinY {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+
+/* Clase que activa la animación de giro */
+.spin-animation {
+  animation: spinY 0.8s linear;
+}
+body.light-mode {
+  background-color: #f0f0f0;
+  color: #222;
+}
+
+/* Y tu modo oscuro por defecto, por ejemplo body sin clase o con otra */
+body.light-mode {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+/* Más estilos para light-mode que tú ya tienes */
+.theme-toggle-btn {
+  font-size: 1.8rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.emoji-circle {
+  display: inline-block;
+  line-height: 1;
+  user-select: none;
+}
+
+.theme-toggle-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #38bdf8; /* azul */
+}
+.emoji-circle {
+  display: inline-block;
+  font-size: 1.5rem;
+  width: 2.8rem;
+  height: 2.8rem;
+  line-height: 2.8rem;
+  text-align: center;
+  border-radius: 50%;
+  border: 2px solid white;
+  user-select: none;
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
+  background-color: transparent;
+  color: white;
+}
+
+body.light-mode .emoji-circle {
+  border-color: #0f172a;
+  color: #0f172a;
+  background-color: #fde68a;
+}
+
+  body {
+    background-color: #121212;
+    color: #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  #chartDepositos, #chartRetiros {
+    background-color: #0f0f0f;
+    border-radius: 8px;
+    box-shadow: 0 0 12px rgba(0,255,0,0.3);
+    margin-bottom: 40px;
+  }
+  #gainPopup {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, #00ff00cc, #007700cc);
+    color: #000;
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-weight: 700;
+    font-size: 18px;
+    box-shadow: 0 0 12px #00ff00cc;
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+.inversiones-activas {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 15px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.inversiones-activas h2 {
+  font-weight: 700;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tabla-inversiones {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  box-shadow: 0 4px 15px rgb(0 0 0 / 0.1);
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.tabla-inversiones thead tr {
+  background-color: #34495e;
+  color: #ecf0f1;
+  text-align: left;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.tabla-inversiones thead tr th {
+  padding: 14px 20px;
+}
+
+.tabla-inversiones tbody tr {
+  background-color: #f9fafb;
+  transition: background-color 0.3s ease;
+  cursor: default;
+}
+
+.tabla-inversiones tbody tr:hover {
+  background-color: #e3e8ee;
+}
+
+.tabla-inversiones tbody tr td {
+  padding: 14px 20px;
+  font-size: 1rem;
+  vertical-align: middle;
+}
+
+.btn-retirar {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.9rem;
+  user-select: none;
+}
+
+.btn-retirar:hover {
+  background-color: #c0392b;
+}
+
+.total-label {
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-align: right;
+  padding-right: 10px;
+  color: #2c3e50;
+}
+
+.total-valor {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #27ae60;
+  padding-left: 10px;
+}
+.inversiones-activas-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.inversiones-activas-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
+  background: #2c3e50;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+}
+
+.inversiones-activas-table thead tr {
+  background-color: #34495e;
+  color: #ecf0f1;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.inversiones-activas-table thead th {
+  padding: 14px 20px;
+  text-align: left;
+  border-bottom: 2px solid #1c2833;
+}
+
+.inversiones-activas-table tbody tr {
+  background-color: #1f2a38;
+  color: #d1d5db;
+  transition: background-color 0.3s ease;
+  cursor: default;
+  border-radius: 8px;
+}
+
+.inversiones-activas-table tbody tr:hover {
+  background-color: #324860;
+}
+
+.inversiones-activas-table tbody tr.finalizada {
+  background-color: #3e3e42 !important;
+  color: #888a8c !important;
+  font-style: italic;
+}
+
+.inversiones-activas-table tbody td {
+  padding: 15px 20px;
+  vertical-align: middle;
+  font-size: 1rem;
+}
+
+.btn-retirar {
+  background-color: #f59e0b; /* amarillo dorado */
+  color: #1f2937; /* texto oscuro */
+  border: none;
+  padding: 8px 18px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.9rem;
+  user-select: none;
+  box-shadow: 0 3px 8px rgba(245, 158, 11, 0.4);
+  width: 100%;
+  max-width: 110px;
+  text-align: center;
+}
+
+.btn-retirar:hover {
+  background-color: #d97706;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.6);
+}
+
+.status-finalizada {
+  color: #f87171; /* rojo suave */
+  font-weight: 600;
+  font-style: normal;
+}
+
+.total-label {
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding-right: 10px;
+  color: #fbbf24;
+  text-align: right;
+}
+
+.total-valor {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #22c55e; /* verde */
+  padding-left: 10px;
+}
+.card-body .card-title {
+  color: black !important;
+  font-weight: 700 !important;
+}
+
+
+.vip-img {
+  width: 100%;
+  max-width: 150px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* RESET GENERAL */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Modo Claro */
+body.light-mode {
+  background-color: #f0f0f0;
+  color: #222;
+}
+
+body.light-mode .btn-outline-light {
+  color: #333;
+  border-color: #ccc;
+}
+
+body.light-mode .emoji-circle {
+  background-color: #fde68a;
+  color: #0f172a;
+}
+
+/* Modo Oscuro */
+body.dark-mode {
+  background-color: #121212;
+  color: #eee;
+}
+
+body.dark-mode .btn-outline-light {
+  color: #fff;
+  border-color: #555;
+}
+
+body.dark-mode .emoji-circle {
+  background-color: #333;
+  color: #fff;
+}

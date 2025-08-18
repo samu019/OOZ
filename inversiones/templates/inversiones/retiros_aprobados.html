@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Retiros Aprobados{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card bg-success text-white">
+        <div class="card-header text-center">
+            <h3>Retiros Aprobados</h3>
+        </div>
+        <div class="card-body">
+            {% if retiros %}
+                <ul class="list-group">
+                    {% for retiro in retiros %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong>{{ retiro.amount }} USD</strong> a <em>{{ retiro.wallet_address }}</em>
+                            <span class="badge bg-light text-dark">{{ retiro.request_date|date:"d M Y - H:i" }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-center">No tienes retiros aprobados aún.</p>
+            {% endif %}
+        </div>
+        <div class="card-footer text-end">
+            <a href="{% url 'withdraw' %}" class="btn btn-light">← Volver</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

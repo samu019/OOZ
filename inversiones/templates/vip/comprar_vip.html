@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Planes VIP disponibles</title>
+  <style>
+    body {
+      background: #121212;
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 20px;
+    }
+    .vip-card {
+      background: #2c2c2c;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      max-width: 400px;
+      box-shadow: 0 0 10px #000;
+      position: relative;
+    }
+    .vip-badge {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: linear-gradient(45deg, #ff7e5f, #feb47b);
+      color: #000;
+      padding: 5px 10px;
+      font-weight: bold;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      user-select: none;
+    }
+    .vip-logo {
+      width: 60px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .vip-img {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .vip-info {
+      font-size: 1rem;
+      margin-top: 10px;
+    }
+    .vip-info p {
+      margin: 4px 0;
+    }
+    .btn-desbloquear {
+      margin-top: 15px;
+      display: inline-block;
+      background-color: #ff7e5f;
+      color: black;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 25px;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      font-size: 1rem;
+    }
+    .btn-desbloquear:hover {
+      background-color: #feb47b;
+    }
+    /* Mensajes Django */
+    .messages {
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-align: center;
+      user-select: none;
+    }
+    .messages.success {
+      background-color: #16a34a;
+      color: white;
+    }
+    .messages.error {
+      background-color: #dc2626;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>Planes VIP disponibles</h1>
+
+  <!-- Mostrar mensajes de éxito o error -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="messages {% if message.tags %}{{ message.tags }}{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  {% for nivel in niveles %}
+  <div class="vip-card">
+    <div class="vip-badge">VIP {{ forloop.counter }}</div>
+
+    {% if nivel.imagen %}
+      <img src="{{ nivel.imagen.url }}" alt="Imagen de {{ nivel.nombre }}" class="vip-img" />
+    {% else %}
+      <p style="text-align:center; font-style: italic; color: #999;">Sin imagen</p>
+    {% endif %}
+
+    <div class="vip-info">
+      <p><strong>{{ nivel.nombre }}</strong></p>
+      <p>Tareas diarias: {{ nivel.tareas_diarias }}</p>
+      <p>Interés simple: {{ nivel.porcentaje_retorno }}%</p>
+      <p>Ganancia diaria: {{ nivel.ganancia_diaria|floatformat:2 }} USDT</p>
+      <p>El beneficio total: {{ nivel.beneficio_total|floatformat:2 }} USDT</p>
+      <p><strong>Costo: ${{ nivel.costo|floatformat:2 }} USDT</strong></p>
+    </div>
+
+    <form method="post" action="{% url 'comprar_vip' %}">
+      {% csrf_token %}
+      <input type="hidden" name="vip" value="{{ nivel.id }}" />
+      <button type="submit" class="btn-desbloquear">Desbloquear ahora</button>
+    </form>
+  </div>
+  {% empty %}
+  <p>No hay niveles VIP disponibles.</p>
+  {% endfor %}
+</body>
+</html>

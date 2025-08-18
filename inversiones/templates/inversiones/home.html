@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inicio | OOZ Plataforma de Inversiones{% endblock %}
+
+{% block content %}
+<style>
+  .center-box {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 40px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    text-align: center;
+  }
+
+  .logo-circle {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 30px auto;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #fbc02d;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .logo-circle img {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
+  }
+</style>
+
+<div class="center-box">
+  <p>Ruta de la imagen: {% static 'img/generated-image.png' %}</p>
+  <div class="logo-circle">
+    <img src="{% static 'img/generated-image.png' %}" alt="Logo OOZ">
+  </div>
+  <h2>Bienvenido a la plataforma de inversiones</h2>
+  <a class="btn" href="{% url 'login' %}">Login</a>
+  <a class="btn" href="{% url 'registro' %}">Registro</a>
+</div>
+{% endblock %}

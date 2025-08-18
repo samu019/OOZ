@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}Configuración{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Configuración del Usuario</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- Preferencias Generales -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white">
+                Preferencias Generales
+            </div>
+            <div class="card-body">
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" name="notificaciones" id="notificaciones"
+                        {% if config.notificaciones %}checked{% endif %}>
+                    <label class="form-check-label" for="notificaciones">
+                        Recibir notificaciones de actividades
+                    </label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" name="tema_oscuro" id="tema_oscuro"
+                        {% if config.tema_oscuro %}checked{% endif %}>
+                    <label class="form-check-label" for="tema_oscuro">
+                        Activar tema oscuro
+                    </label>
+                </div>
+                <div class="mb-3">
+                    <label for="idioma" class="form-label">Idioma preferido</label>
+                    <select class="form-select" name="idioma" id="idioma">
+                        <option value="es" {% if config.idioma == 'es' %}selected{% endif %}>Español</option>
+                        <option value="en" {% if config.idioma == 'en' %}selected{% endif %}>Inglés</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seguridad -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                Seguridad
+            </div>
+            <div class="card-body">
+                <!-- Enlace corregido -->
+                <a href="{% url 'cambiar_contraseña' %}" class="btn btn-outline-primary w-100 mb-2">
+                    Cambiar Contraseña
+                </a>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" name="two_factor" id="two_factor"
+                        {% if config.two_factor %}checked{% endif %}>
+                    <label class="form-check-label" for="two_factor">
+                        Activar verificación en dos pasos (2FA)
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Guardar Cambios -->
+        <div class="d-flex justify-content-between">
+            <!-- Botón Volver atrás -->
+            <a href="{{ request.META.HTTP_REFERER|default:'/panel-inicio/' }}" class="btn btn-outline-secondary">
+                Volver Atrás
+            </a>
+
+            <button class="btn btn-primary" type="submit">
+                Guardar cambios
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

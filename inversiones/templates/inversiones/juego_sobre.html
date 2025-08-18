@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Juego de Sobres</h2>
+
+  {% if juego.jugado %}
+    <p>Ya jugaste este juego.</p>
+    <a href="{% url 'resultado_juego' juego.id %}">Ver resultado</a>
+  {% else %}
+    <form method="post">
+      {% csrf_token %}
+      <p>Elige un sobre (1 a 6):</p>
+      <div style="display:flex; gap:10px;">
+        {% for i in "123456" %}
+          <button type="submit" name="sobre_elegido" value="{{ i }}" class="btn btn-warning">Sobre {{ i }}</button>
+        {% endfor %}
+      </div>
+    </form>
+  {% endif %}
+
+  <br>
+  <a href="{% url 'dashboard' %}">Volver al dashboard</a>
+{% endblock %}

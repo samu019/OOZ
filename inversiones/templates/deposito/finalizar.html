@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-12">
+            <div class="card shadow-lg">
+                <div class="card-header bg-success text-white text-center">
+                    <h3 class="m-0">¡Finaliza tu Depósito!</h3>
+                </div>
+                <div class="card-body">
+                    {% if deposito.status == 'pending' %}
+                    <p class="text-center">
+                        <strong>Tu depósito está pendiente.</strong> 
+                        Para completar el proceso, haz clic en el siguiente botón para finalizar.
+                    </p>
+                    <div class="d-flex justify-content-center">
+                        <form method="POST" action="{% url 'finalizar_deposito' deposito.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-lg">
+                                Finalizar Depósito
+                            </button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info text-center" role="alert">
+                        <p>Este depósito ya ha sido procesado.</p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'depositos' %}" class="btn btn-link text-success">Volver a mis depósitos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Tus Tareas</h2>
+
+{% if permitir_tareas %}
+    <p>Puedes completar las tareas disponibles.</p>
+{% else %}
+    <p>No puedes completar nuevas tareas todavía. Espera a que se liberen nuevas.</p>
+{% endif %}
+
+<ul>
+  {% for tarea in tareas %}
+    <li>
+      <strong>{{ tarea.titulo }}</strong> - Recompensa: {{ tarea.recompensa }} monedas
+      {% if tarea.id in tareas_completadas_ids %}
+        <span style="color: green;">(Completada)</span>
+      {% else %}
+        {% if permitir_tareas %}
+          <form action="{% url 'completar_tarea' tarea.id %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Completar</button>
+          </form>
+        {% else %}
+          <span>(No disponible aún)</span>
+        {% endif %}
+      {% endif %}
+    </li>
+  {% empty %}
+    <li>No hay tareas activas por ahora.</li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

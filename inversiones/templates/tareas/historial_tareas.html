@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Historial de Tareas{% endblock %}
+
+{% block content %}
+<h2>📋 Historial de Tareas Completadas</h2>
+
+<table style="width:100%; border-collapse: collapse; margin-top: 20px;">
+  <thead style="background: #004488; color: white;">
+    <tr>
+      <th style="padding: 10px; border: 1px solid #ccc;">#</th>
+      <th style="padding: 10px; border: 1px solid #ccc;">Fecha</th>
+      <th style="padding: 10px; border: 1px solid #ccc;">Descripción</th>
+      <th style="padding: 10px; border: 1px solid #ccc;">Ganancia (USDT)</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for tarea in tareas %}
+    <tr style="background: #0a0a09;">
+      <td style="padding: 10px; border: 1px solid #ddd;">{{ forloop.counter }}</td>
+      <td style="padding: 10px; border: 1px solid #ddd;">{{ tarea.fecha_realizada|date:"Y-m-d H:i" }}</td>
+      <td style="padding: 10px; border: 1px solid #ddd;">{{ tarea.task.titulo }}</td>
+      <td style="padding: 10px; border: 1px solid #ddd;">+{{ tarea.task.recompensa|floatformat:2 }} USDT</td>
+    </tr>
+  {% empty %}
+    <tr>
+      <td colspan="4" style="padding:10px; text-align:center;">
+        No has completado tareas aún.
+      </td>
+    </tr>
+  {% endfor %}
+</tbody>
+
+</table>
+
+<a href="{% url 'dashboard' %}" class="btn btn-secondary mt-4">← Volver al panel</a>
+{% endblock %}

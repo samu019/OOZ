@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Retiros Aprobados{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Retiros Aprobados</h2>
+    {% if retiros %}
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Monto</th>
+                        <th>Fecha</th>
+                        <th>Procesado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for retiro in retiros %}
+                        <tr>
+                            <td>{{ retiro.id }}</td>
+                            <td>{{ retiro.user.username }}</td>
+                            <td>${{ retiro.monto }}</td>
+                            <td>{{ retiro.fecha|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                {% if retiro.procesado %}
+                                    <span class="badge bg-success">Sí</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">No</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">No hay retiros aprobados todavía.</div>
+    {% endif %}
+</div>
+{% endblock %}
+

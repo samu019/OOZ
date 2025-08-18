@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block title %}Iniciar sesión{% endblock %}
+
+{% block content %}
+<style>
+  /* Estilos amarillos suaves */
+  .login-card {
+    background-color: #fbc02d;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(251, 192, 45, 0.4);
+    padding: 2rem;
+    max-width: 450px;
+    width: 100%;
+  }
+  .login-card label {
+    font-weight: 600;
+    color: #333;
+  }
+  .login-card input {
+    border-radius: 8px;
+    border: 1px solid #d1b200;
+    padding: 10px 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .login-card input:focus {
+    outline: none;
+    border-color: #b38f00;
+    box-shadow: 0 0 8px #b38f00;
+  }
+  .login-btn {
+    background-color: #333;
+    color: #fbc02d;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .login-btn:hover {
+    background-color: #222;
+  }
+  
+  /* Switch toggle estilo */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    margin-top: 8px;
+  }
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 26px;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: #333;
+  }
+  input:checked + .slider:before {
+    transform: translateX(24px);
+  }
+  .show-pass-label {
+    font-weight: 600;
+    color: #333;
+    margin-left: 10px;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+</style>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 90vh; background-color: #fff8e1;">
+  <div class="card shadow-lg border-0 login-card">
+    <div class="card-body p-4">
+      <h3 class="text-center mb-4 text-dark">Iniciar sesión</h3>
+
+      {% if messages %}
+      <div class="mb-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} text-center py-2">
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <form method="POST" novalidate>
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="mb-3">
+          {{ form.username.label_tag }}
+          {{ form.username }}
+          {% if form.username.errors %}
+          <small class="text-danger">{{ form.username.errors.0 }}</small>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.password.label_tag }}
+          {{ form.password }}
+
+          <label class="switch">
+            <input type="checkbox" id="showPasswordToggle" />
+            <span class="slider"></span>
+          </label>
+          <label for="showPasswordToggle" class="show-pass-label">Mostrar contraseña</label>
+
+          {% if form.password.errors %}
+          <small class="text-danger">{{ form.password.errors.0 }}</small>
+          {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-dark w-100 login-btn">Iniciar sesión</button>
+      </form>
+
+      <div class="text-center mt-3 login-footer">
+        <p class="text-muted mb-0">¿No tienes cuenta?
+          <a href="{% url 'registro' %}" class="fw-bold text-dark">Regístrate</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const passwordInput = document.getElementById("id_password");
+  const toggleCheckbox = document.getElementById("showPasswordToggle");
+
+  toggleCheckbox.addEventListener('change', function() {
+    if (this.checked) {
+      passwordInput.type = 'text';
+    } else {
+      passwordInput.type = 'password';
+    }
+  });
+</script>
+
+{% endblock %}

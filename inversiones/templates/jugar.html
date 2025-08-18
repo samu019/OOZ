@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Jugar Inversión{% endblock %}
+
+{% block content %}
+  <div class="container text-center">
+    <h2 class="mb-4">Elige un sobre (1, 2 o 3)</h2>
+    <p>Tu saldo: <strong>{{ balance }} USDT</strong></p>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="btn-group mt-3" role="group">
+        <button type="submit" name="opcion" value="1" class="btn btn-primary">Sobre 1</button>
+        <button type="submit" name="opcion" value="2" class="btn btn-success">Sobre 2</button>
+        <button type="submit" name="opcion" value="3" class="btn btn-warning">Sobre 3</button>
+      </div>
+    </form>
+  </div>
+{% endblock %}

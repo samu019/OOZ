@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Estado del Depósito</h2>
+
+    <!-- Mensaje de estado dinámico -->
+    <div class="alert {% if deposito.status == 'confirmed' %}alert-success{% elif deposito.status == 'pending' %}alert-warning{% else %}alert-danger{% endif %}">
+        <strong>Estado: </strong>{{ deposito.get_status_display }}
+    </div>
+
+    <!-- Mostrar detalles del depósito -->
+    <p><strong>ID del pago:</strong> {{ deposito.payment_id }}</p>
+    <p><strong>Monto:</strong> ${{ deposito.amount_usd }} USD</p>
+
+    <!-- Mensaje dinámico de seguridad -->
+    <div class="alert alert-info">
+        <strong>Mensaje de Seguridad: </strong>Asegúrate de que los detalles del pago sean correctos.
+    </div>
+
+    <!-- Mostrar el tiempo estimado de revisión si el depósito está pendiente -->
+    {% if deposito.status == 'pending' %}
+        <p>Tu pago está pendiente. Esperando la confirmación del administrador.</p>
+        <p><strong>Tiempo de revisión estimado:</strong> 24 horas.</p>
+    {% endif %}
+
+    <!-- Mensajes adicionales según el estado del depósito -->
+    {% if deposito.status == 'confirmed' %}
+        <p>¡Tu depósito ha sido confirmado! Gracias por tu pago.</p>
+    {% endif %}
+
+    {% if deposito.status == 'failed' %}
+        <p>Tu depósito ha sido rechazado. Por favor, contacta con soporte.</p>
+    {% endif %}
+
+    <!-- Opciones de navegación -->
+    <div class="d-flex justify-content-end mt-4">
+        {% if deposito.status == 'pending' %}
+            <!-- Si el estado es pendiente, se muestra el botón para finalizar el depósito -->
+            <a href="{% url 'finalizar_deposito' deposito.id %}" class="btn btn-success me-2">
+                Finalizar Depósito
+            </a>
+        {% endif %}
+
+        <!-- Botón para regresar al Panel de Inicio -->
+        <a href="{% url 'dashboard' %}" class="btn btn-primary">Ir al Panel de Inicio</a>
+    </div>
+</div>
+{% endblock %}

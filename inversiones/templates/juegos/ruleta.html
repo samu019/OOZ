@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}Ruleta - Juego de Inversión{% endblock %}
+
+{% load static %}
+
+{% block content %}
+<style>
+  /* Contenedor de la ruleta */
+  .ruleta-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    text-align: center;
+  }
+
+  /* Imagen de ruleta */
+  .ruleta-wheel {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 50%;
+    transition: transform 4s cubic-bezier(0.33, 1, 0.68, 1);
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  }
+
+  /* Flecha indicadora */
+  .arrow {
+    width: 0; 
+    height: 0; 
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 30px solid #ff3e00;
+    margin: 0 auto 1rem auto;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.4));
+  }
+
+  /* Botón para girar */
+  .btn-spin {
+    background: linear-gradient(45deg, #ff3e00, #ff9500);
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    color: white;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(255, 62, 0, 0.7);
+    transition: background 0.3s ease;
+  }
+  .btn-spin:hover {
+    background: linear-gradient(45deg, #ff9500, #ff3e00);
+  }
+
+  /* Resultado */
+  .resultado {
+    margin-top: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #222;
+    min-height: 40px;
+  }
+
+  /* Animación de flecha pulsante */
+  @keyframes pulseArrow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  .arrow {
+    animation: pulseArrow 1.5s infinite;
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .ruleta-container {
+      max-width: 300px;
+    }
+  }
+</style>
+
+<div class="ruleta-container">
+  <h1 class="mb-3">🎡 Ruleta de la Suerte</h1>
+  <div class="arrow"></div>
+  <img src="{% static 'img/ruleta.png' %}" alt="Ruleta" id="ruleta" class="ruleta-wheel">
+
+  <form method="post" id="ruleta-form">
+    {% csrf_token %}
+    <label for="opcion">Elige un número del 1 al 6:</label><br>
+    <input type="number" id="opcion" name="opcion" min="1" max="6" required style="width: 60px; font-size: 1.2rem; text-align: center; margin-top: 0.5rem;">
+    <br><br>
+    <button type="submit" class="btn-spin">Girar Ruleta</button>
+  </form>
+
+<div class="resultado" id="resultado">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert 
+        {% if 'success' in message.tags %}
+          alert-success
+        {% elif 'error' in message.tags or 'danger' in message.tags %}
+          alert-danger
+        {% elif 'warning' in message.tags %}
+          alert-warning
+        {% else %}
+          alert-info
+        {% endif %} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+<script>
+  const ruleta = document.getElementById('ruleta');
+  const form = document.getElementById('ruleta-form');
+  const resultadoDiv = document.getElementById('resultado');
+  let girando = false;
+
+  // Ángulo por segmento = 360 / 6 = 60 grados
+  const segmentos = 6;
+
+  form.addEventListener('submit', function(e){
+    if(girando) {
+      e.preventDefault();
+      alert("La ruleta ya está girando, espera el resultado.");
+      return;
+    }
+
+    e.preventDefault();
+    const opcion = parseInt(document.getElementById('opcion').value);
+    if(opcion < 1 || opcion > 6){
+      alert("Por favor, elige un número entre 1 y 6.");
+      return;
+    }
+
+    girando = true;
+    resultadoDiv.textContent = "Girando... 🍀";
+
+    // Generar número ganador aleatorio 1-6 (simula resultado servidor)
+    const ganador = Math.floor(Math.random() * 6) + 1;
+
+    // Calcular ángulo para que ruleta termine en ganador (6 segmentos, cada uno 60°)
+    // Para mejor efecto, se suman vueltas completas (360 * vueltas)
+    const vueltas = 5;
+    const angle = 360 * vueltas + (segmentos - ganador) * 60 + 30; // +30 para centrar en segmento
+
+    ruleta.style.transform = `rotate(${angle}deg)`;
+
+    // Después de 4 segundos, mostrar resultado y enviar formulario
+    setTimeout(() => {
+      if(opcion === ganador){
+        resultadoDiv.innerHTML = `🎉 ¡Felicidades! Salió el <strong>${ganador}</strong> y ganaste.`;
+      } else {
+        resultadoDiv.innerHTML = `😞 Salió el <strong>${ganador}</strong>. Mejor suerte la próxima.`;
+      }
+
+      // Crear campo oculto para resultado ganador y enviar formulario al servidor
+      const inputGanador = document.createElement('input');
+      inputGanador.type = 'hidden';
+      inputGanador.name = 'resultado_servidor';
+      inputGanador.value = ganador;
+      form.appendChild(inputGanador);
+
+      form.submit();
+      girando = false;
+    }, 4000);
+  });
+</script>
+
+{% endblock %}

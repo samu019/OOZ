@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+
+{% block title %}Verifica tu correo{% endblock %}
+
+{% block extra_css %}
+<style>
+  .container-verificacion {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .container-verificacion h2 {
+    margin-bottom: 15px;
+  }
+
+  .form-input {
+    padding: 8px;
+    width: 80%;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+  }
+
+  button#btn-verificar, button#btn-reenviar {
+    background: #fbc02d;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+
+  button#btn-verificar:hover, button#btn-reenviar:hover:not(:disabled) {
+    background-color: #f9a825;
+  }
+
+  button#btn-reenviar[disabled] {
+    background-color: #ddd;
+    cursor: not-allowed;
+  }
+
+  .message {
+    margin: 10px 0;
+    font-weight: 500;
+  }
+
+  .message.error {
+    color: red;
+  }
+
+  .message.warning {
+    color: orange;
+  }
+
+  .message.success {
+    color: green;
+  }
+
+  .reenviar-container {
+    margin-top: 15px;
+  }
+
+  a.reenviar-link {
+    cursor: pointer;
+    color: #007bff;
+    text-decoration: underline;
+  }
+
+  a.reenviar-link:hover {
+    color: #0056b3;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-verificacion">
+  <h2>Verifica tu correo</h2>
+  <p>Te enviamos un código a tu correo registrado. Escríbelo abajo para verificar tu cuenta.</p>
+
+  <!-- Mensajes Django -->
+  <div id="django-messages">
+    {% if messages %}
+      {% for message in messages %}
+        <p class="message {{ message.tags }}">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <form method="POST" id="form-verificar">
+    {% csrf_token %}
+    <label for="code">Código de verificación</label><br>
+    <input
+      type="text"
+      id="code"
+      name="codigo"
+      maxlength="6"
+      placeholder="Código de verificación"
+      required
+      class="form-input"
+    >
+    <br>
+    <button type="submit" id="btn-verificar">Verificar</button>
+  </form>
+
+  <div class="reenviar-container">
+    <button id="btn-reenviar" type="button" disabled>Reenviar código (30)</button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const btnReenviar = document.getElementById('btn-reenviar');
+    const countdownStart = 30;
+    let countdown = countdownStart;
+
+    // Habilitar el botón tras 30 segundos
+    const timer = setInterval(() => {
+      countdown--;
+      btnReenviar.textContent = `Reenviar código (${countdown})`;
+      if (countdown <= 0) {
+        clearInterval(timer);
+        btnReenviar.textContent = 'Reenviar código';
+        btnReenviar.disabled = false;
+      }
+    }, 1000);
+
+    btnReenviar.addEventListener('click', function () {
+      btnReenviar.disabled = true;
+      countdown = countdownStart;
+      btnReenviar.textContent = `Reenviar código (${countdown})`;
+
+      // Reiniciar el temporizador
+      const newTimer = setInterval(() => {
+        countdown--;
+        btnReenviar.textContent = `Reenviar código (${countdown})`;
+        if (countdown <= 0) {
+          clearInterval(newTimer);
+          btnReenviar.textContent = 'Reenviar código';
+          btnReenviar.disabled = false;
+        }
+      }, 1000);
+
+      // Llamada AJAX para reenviar el código
+      fetch("{% url 'reenviar_codigo_ajax' %}", {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+      })
+      .then(response => response.json())
+      .then(data => {
+        const mensajesDiv = document.getElementById('django-messages');
+        mensajesDiv.innerHTML = ''; // Limpiar mensajes previos
+
+        if (data.success) {
+          const p = document.createElement('p');
+          p.classList.add('message', 'success');
+          p.textContent = data.success;
+          mensajesDiv.appendChild(p);
+        }
+        if (data.error) {
+          const p = document.createElement('p');
+          p.classList.add('message', 'error');
+          p.textContent = data.error;
+          mensajesDiv.appendChild(p);
+        }
+      })
+      .catch(() => {
+        const mensajesDiv = document.getElementById('django-messages');
+        mensajesDiv.innerHTML = '<p class="message error">Error al reenviar el código. Intenta nuevamente.</p>';
+      });
+    });
+  });
+</script>
+{% endblock %}

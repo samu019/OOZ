@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Niveles VIP</h2>
+    <div class="row">
+        {% for vip in vip_levels %}
+        <div class="col-md-3">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header text-center bg-primary text-white">
+                    <h4>{{ vip.nombre }}</h4>
+                </div>
+                <div class="card-body text-center">
+                    <p><strong>Costo:</strong> ${{ vip.costo }}</p>
+                    <p><strong>Tareas diarias:</strong> {{ vip.tareas_diarias }}</p>
+                    <p><strong>Ganancia diaria:</strong> ${{ vip.ganancia_diaria }}</p>
+                    <p><strong>Duración:</strong> {{ vip.duracion_dias }} días</p>
+
+                    {# Beneficio mensual (26 días activos, sin domingos) #}
+                    {% with beneficio=vip.tareas_diarias|mul:vip.ganancia_diaria|mul:26 %}
+                        <p class="text-success">
+                            <strong>Beneficio mensual:</strong> ${{ beneficio }}
+                        </p>
+                    {% endwith %}
+
+                    {# Botón para comprar VIP #}
+                    <a href="{% url 'comprar_vip' vip.id %}" class="btn btn-success btn-block">
+                        Desbloquear
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Tareas Diarias - OOZ{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Tareas Diarias</h2>
+
+{% if acceso_restringido %}
+  <div class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    Para acceder a las tareas diarias, necesitas tener una membresía VIP activa.
+  </div>
+  <a href="{% url 'comprar_vip' %}" class="btn btn-warning mb-3">
+    Comprar Membresía VIP
+  </a>
+{% else %}
+  {% if tareas %}
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+      {% for tarea in tareas %}
+      <div class="col">
+        <div class="card h-100 border-3 {% if tarea.completada %}border-success{% else %}border-primary{% endif %}">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ tarea.titulo }}</h5>
+            <p class="card-text flex-grow-1">{{ tarea.descripcion|linebreaksbr }}</p>
+
+            {% if tarea.completada %}
+              <button class="btn btn-success mt-auto" disabled>
+                <i class="bi bi-check-circle-fill"></i> Completada
+              </button>
+            {% else %}
+              <a href="{% url 'realizar_tarea' tarea.id %}" class="btn btn-primary mt-auto">
+                Realizar Tarea
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="alert alert-info">
+      No hay tareas disponibles por el momento. Vuelve más tarde.
+    </div>
+  {% endif %}
+{% endif %}
+{% endblock %}

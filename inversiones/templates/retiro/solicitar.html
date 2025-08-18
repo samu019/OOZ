@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Solicitar Retiro{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5; /* Fondo suave */
+    }
+
+    .retiro-container {
+        max-width: 600px;
+        margin: auto;
+        padding: 2rem;
+        background-color: #fff8e1; /* Amarillo claro para el fondo */
+        border-radius: 16px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    .retiro-container h2 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #6a4e23; /* Color marrón para el título */
+    }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+    label {
+        font-weight: bold;
+        color: #6a4e23; /* Color marrón para las etiquetas */
+    }
+
+    .btn-primary {
+        width: 100%;
+        background: linear-gradient(to right, #f9a825, #c1793d); /* Amarillo fuerte y marrón */
+        border: none;
+        padding: 0.75rem;
+        border-radius: 8px;
+        color: white;
+        font-size: 1rem;
+        transition: background 0.3s;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(to right, #c1793d, #f9a825); /* Cambio de tono para el hover */
+    }
+
+    .indicaciones {
+        background-color: #ffecb3; /* Amarillo suave para las indicaciones */
+        padding: 1rem;
+        border-left: 5px solid #f9a825; /* Amarillo fuerte para el borde */
+        margin-bottom: 1.5rem;
+        border-radius: 8px;
+        color: #6a4e23; /* Marrón para el texto */
+    }
+
+    .indicaciones ul {
+        padding-left: 1.2rem;
+    }
+
+    .alert {
+        margin-top: 1rem;
+        background-color: #f9a825; /* Amarillo fuerte para alertas */
+        color: #fff; /* Blanco para las letras */
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    .alert-info {
+        background-color: #c1793d; /* Marrón claro para el saldo disponible */
+        color: #fff;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-control {
+        background-color: #fff; /* Fondo blanco para los campos */
+        border: 1px solid #c1793d; /* Borde marrón claro */
+        color: #6a4e23; /* Texto marrón oscuro */
+    }
+
+    .form-control:focus {
+        border-color: #f9a825; /* Amarillo fuerte en foco */
+        box-shadow: 0 0 8px rgba(249, 168, 37, 0.5);
+    }
+</style>
+
+<div class="retiro-container">
+    <h2>Solicita tu Retiro</h2>
+
+    <div class="indicaciones">
+        <strong>Indicaciones para solicitar retiro:</strong>
+        <ul>
+            <li>Asegúrate de tener saldo suficiente en tu cuenta.</li>
+            <li>Los retiros se procesan en un plazo de 24-48 horas.</li>
+            <li>No se realizan pagos los domingos.</li>
+            <li>Revisa que los datos del método de pago estén correctos.</li>
+        </ul>
+    </div>
+
+    <!-- Mostrar el saldo disponible en la billetera -->
+    <div class="alert alert-info">
+        <strong>Saldo disponible: </strong> ${{ user.wallet_account.balance|floatformat:2 }}
+    </div>
+
+    <!-- Formulario para solicitar un retiro -->
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            {{ form.amount_usd.label_tag }}
+            {{ form.amount_usd }}
+        </div>
+        
+        <div class="form-group">
+            {{ form.wallet_address.label_tag }}
+            {{ form.wallet_address }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+    </form>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

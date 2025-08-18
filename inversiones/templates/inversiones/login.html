@@ -1,0 +1,24 @@
+<form method="post" novalidate>
+    {% csrf_token %}
+    
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+    
+    {{ form.non_field_errors }}
+    
+    <div class="mb-3">
+        {{ form.username.label_tag }}
+        {{ form.username }}
+        {{ form.username.errors }}
+    </div>
+    <div class="mb-3">
+        {{ form.password.label_tag }}
+        {{ form.password }}
+        {{ form.password.errors }}
+    </div>
+    <button type="submit" class="btn btn-primary">Ingresar</button>
+</form>
+

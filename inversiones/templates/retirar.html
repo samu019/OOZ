@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editar Perfil{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Editar Perfil</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="POST" enctype="multipart/form-data" class="row g-4 shadow p-4 bg-white rounded">
+    {% csrf_token %}
+
+    <!-- Columna izquierda: Información básica -->
+    <div class="col-md-6">
+      <h5 class="mb-3">Datos del Usuario</h5>
+      
+      <div class="mb-3">
+        {{ user_form.username.label_tag }}
+        {{ user_form.username }}
+      </div>
+
+      <div class="mb-3">
+        {{ user_form.first_name.label_tag }}
+        {{ user_form.first_name }}
+      </div>
+
+      <div class="mb-3">
+        {{ user_form.last_name.label_tag }}
+        {{ user_form.last_name }}
+      </div>
+
+      <div class="mb-3">
+        {{ user_form.email.label_tag }}
+        <input type="email" class="form-control" value="{{ user_form.email.value }}" readonly>
+      </div>
+    </div>
+
+    <!-- Columna derecha: Perfil -->
+    <div class="col-md-6">
+      <h5 class="mb-3">Perfil</h5>
+      
+      {% if profile_form.instance.photo %}
+        <div class="mb-3 text-center">
+          <img src="{{ profile_form.instance.photo.url }}" alt="Foto de perfil" class="img-thumbnail" width="150">
+        </div>
+      {% endif %}
+
+      <div class="mb-3">
+        {{ profile_form.photo.label_tag }}
+        {{ profile_form.photo }}
+      </div>
+
+      <div class="mb-3">
+        {{ profile_form.phone.label_tag }}
+        {{ profile_form.phone }}
+      </div>
+
+      <div class="mb-3">
+        {{ profile_form.birthdate.label_tag }}
+        {{ profile_form.birthdate }}
+      </div>
+
+      <div class="mb-3">
+        {{ profile_form.address.label_tag }}
+        {{ profile_form.address }}
+      </div>
+
+      <div class="mb-3">
+        {{ profile_form.bio.label_tag }}
+        {{ profile_form.bio }}
+      </div>
+    </div>
+
+    <!-- Botón de guardado -->
+    <div class="col-12 text-center">
+      <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  .btn-danger {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+  }
+
+  .btn-link {
+      display: block;
+      margin-top: 15px;
+      text-align: center;
+      color: #f44336;
+      text-decoration: none;
+  }
+
+  .messages {
+      list-style: none;
+      padding: 0;
+      margin-top: 25px;
+  }
+
+  .messages li {
+      font-weight: bold;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+  }
+
+  .messages li.success {
+      background-color: #d4edda;
+      color: #155724;
+  }
+
+  .messages li.error, .messages li.danger {
+      background-color: #f8d7da;
+      color: #721c24;
+  }
+
+  .messages li.warning {
+      background-color: #fff3cd;
+      color: #856404;
+  }
+
+  .messages li.info {
+      background-color: #d1ecf1;
+      color: #0c5460;
+  }
+</style>
+{% endblock %}

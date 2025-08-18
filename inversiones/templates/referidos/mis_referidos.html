@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Panel de Referidos{% endblock %}
+
+{% block content %}
+<style>
+  .referidos-container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #1e293b;
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+  }
+
+  .referidos-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .referidos-link {
+    background: #0ea5e9;
+    padding: 15px 20px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1rem;
+    user-select: all;
+    cursor: pointer;
+    word-break: break-all;
+  }
+
+  .referidos-link:hover {
+    background: #0284c7;
+  }
+
+  .copy-btn {
+    background: #0284c7;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    flex-shrink: 0;
+    margin-left: 15px;
+  }
+
+  .copy-btn:hover {
+    background: #0369a1;
+  }
+
+  .stats-flex {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+  }
+
+  .stat-card {
+    background: #273549;
+    flex: 1 1 250px;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  }
+
+  .stat-card h3 {
+    margin-bottom: 10px;
+    font-size: 1.8rem;
+    color: #38bdf8;
+  }
+
+  .stat-card p {
+    font-size: 1.2rem;
+    color: #e0e7ff;
+  }
+</style>
+
+<div class="referidos-container"> 
+  <div class="referidos-header">
+    <h2>Tu Enlace de Referido</h2>
+    <p>Comparte este enlace para que otros se unan a través de ti.</p>
+  </div>
+
+  <div class="referidos-link" id="referidoLink">
+    <!-- Enlace clickeable -->
+    <a href="{{ link_referido }}" target="_blank">{{ link_referido }}</a>
+    <button class="copy-btn" onclick="copyReferidoLink()">Copiar</button>
+  </div>
+
+  <div class="stats-flex" role="region" aria-label="Estadísticas de referidos">
+    <div class="stat-card" tabindex="0">
+      <h3>{{ total_referidos }}</h3>
+      <p>Referidos</p>
+    </div>
+    <div class="stat-card" tabindex="0">
+      <h3>{{ total_inversiones|floatformat:2 }} USDT</h3>
+      <p>Inversiones Totales</p>
+    </div>
+    <div class="stat-card" tabindex="0">
+      <h3>{{ total_recompensas|floatformat:2 }} USDT</h3>
+      <p>Recompensas por Tareas</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  function copyReferidoLink() {
+    const linkElement = document.querySelector('#referidoLink a');
+    const linkText = linkElement.href;
+    navigator.clipboard.writeText(linkText)
+      .then(() => alert('¡Enlace copiado al portapapeles!'))
+      .catch(() => alert('Error al copiar el enlace.'));
+  }
+</script>
+{% endblock %}

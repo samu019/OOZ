@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Estado de Retiros{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    background-color: #fefefe;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-weight: 700;
+  }
+
+  .retiro-list {
+    margin-bottom: 50px;
+  }
+
+  .retiro-item {
+    background: #f9f9f9;
+    border-left: 5px solid #ffc107;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  }
+
+  .retiro-item:hover {
+    background-color: #fff3cd;
+  }
+
+  .retiro-item span {
+    font-weight: 600;
+  }
+
+  .no-items {
+    font-style: italic;
+    color: #888;
+    text-align: center;
+    margin: 25px 0;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .pagination a, .pagination span {
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #007bff;
+    border: 1px solid transparent;
+  }
+
+  .pagination a:hover {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+  }
+
+  .pagination .current {
+    background-color: #ffc107;
+    color: black;
+    border-color: #ffc107;
+    font-weight: 700;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 40px;
+  }
+
+  .actions a {
+    background-color: #ffc107;
+    color: #000;
+    padding: 12px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
+  }
+
+  .actions a:hover {
+    background-color: #ffb300;
+  }
+
+  @media (max-width: 600px) {
+    .actions {
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+</style>
+
+<div class="container">
+  <h2>Retiros Pendientes</h2>
+  {% if pendientes %}
+    <div class="retiro-list">
+      {% for retiro in pendientes %}
+        <div class="retiro-item">
+          <span>Monto:</span> ${{ retiro.monto }}<br>
+          <span>Fecha de solicitud:</span> {{ retiro.fecha_solicitud|date:"d M Y H:i" }}<br>
+          {% if retiro.wallet %}
+          <span>Dirección de wallet:</span> {{ retiro.wallet }}
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="pagination">
+      {% if pendientes.has_previous %}
+        <a href="?page_pendientes={{ pendientes.previous_page_number }}">Anterior</a>
+      {% endif %}
+      <span class="current">Página {{ pendientes.number }} de {{ pendientes.paginator.num_pages }}</span>
+      {% if pendientes.has_next %}
+        <a href="?page_pendientes={{ pendientes.next_page_number }}">Siguiente</a>
+      {% endif %}
+    </div>
+  {% else %}
+    <p class="no-items">No tienes retiros pendientes.</p>
+  {% endif %}
+
+  <h2>Retiros Aprobados</h2>
+  {% if aprobados %}
+    <div class="retiro-list">
+      {% for retiro in aprobados %}
+        <div class="retiro-item" style="border-left-color:#28a745;">
+          <span>Monto:</span> ${{ retiro.monto }}<br>
+          <span>Fecha de aprobación:</span> {{ retiro.fecha_solicitud|date:"d M Y H:i" }}<br>
+          {% if retiro.wallet %}
+          <span>Dirección de wallet:</span> {{ retiro.wallet }}
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="pagination">
+      {% if aprobados.has_previous %}
+        <a href="?page_aprobados={{ aprobados.previous_page_number }}">Anterior</a>
+      {% endif %}
+      <span class="current">Página {{ aprobados.number }} de {{ aprobados.paginator.num_pages }}</span>
+      {% if aprobados.has_next %}
+        <a href="?page_aprobados={{ aprobados.next_page_number }}">Siguiente</a>
+      {% endif %}
+    </div>
+  {% else %}
+    <p class="no-items">No tienes retiros aprobados.</p>
+  {% endif %}
+
+  <div class="actions">
+    <a href="{% url 'withdraw' %}">Solicitar nuevo retiro</a>
+    <a href="{% url 'dashboard' %}">Volver al dashboard</a>
+  </div>
+</div>
+
+{% endblock %}

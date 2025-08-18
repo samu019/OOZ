@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Depósito - Subir Comprobante{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+  <h3>Sube tu comprobante de depósito</h3>
+
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    
+    <div class="mb-3">
+      {{ form.transaccion_id.label_tag }}
+      {{ form.transaccion_id }}
+      {% if form.transaccion_id.errors %}
+        <div class="text-danger small">{{ form.transaccion_id.errors }}</div>
+      {% endif %}
+    </div>
+
+    <div class="mb-3">
+      {{ form.imagen.label_tag }}
+      {{ form.imagen }}
+      {% if form.imagen.errors %}
+        <div class="text-danger small">{{ form.imagen.errors }}</div>
+      {% endif %}
+    </div>
+
+    <div class="mb-3 form-check">
+      {{ form.condiciones_aceptadas }}
+      {{ form.condiciones_aceptadas.label_tag }}
+      {% if form.condiciones_aceptadas.errors %}
+        <div class="text-danger small">{{ form.condiciones_aceptadas.errors }}</div>
+      {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-success w-100">Enviar Proceso</button>
+  </form>
+</div>
+{% endblock %}

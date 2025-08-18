@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Realizar Depósito{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+  <h2 class="mb-4">Realizar Depósito</h2>
+
+  <!-- Mensajes de éxito o error -->
+  {% if messages %}
+    {% for message in messages %}
+      <div 
+        class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %}" 
+        role="alert"
+      >
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+
+    <div class="mb-3">
+      {{ form.monto.label_tag }}
+      {{ form.monto }}
+      {% if form.monto.errors %}
+        <div class="text-danger small">{{ form.monto.errors }}</div>
+      {% endif %}
+    </div>
+
+    <div class="mb-3">
+      {{ form.imagen.label_tag }}
+      {{ form.imagen }}
+      {% if form.imagen.errors %}
+        <div class="text-danger small">{{ form.imagen.errors }}</div>
+      {% endif %}
+    </div>
+
+    <div class="mb-3 form-check">
+      {{ form.condiciones_aceptadas }}
+      {{ form.condiciones_aceptadas.label_tag }}
+      {% if form.condiciones_aceptadas.errors %}
+        <div class="text-danger small">{{ form.condiciones_aceptadas.errors }}</div>
+      {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Enviar Depósito</button>
+  </form>
+
+  <!-- Información del proceso con nuevo color -->
+  <div class="mt-5 p-3 rounded" style="background-color: #007bff; color: white;">
+    <h5>¿Cómo funciona el proceso de depósito?</h5>
+    <ol>
+      <li><strong>Ingresa el monto:</strong> Introduce la cantidad que deseas depositar.</li>
+      <li><strong>Sube el comprobante:</strong> Sube una imagen clara del comprobante de pago o transferencia.</li>
+      <li><strong>Acepta términos:</strong> Acepta los términos y condiciones para continuar.</li>
+      <li><strong>Espera la aprobación:</strong> Nuestro equipo verificará tu depósito en un máximo de 24 horas.</li>
+      <li><strong>Notificación:</strong> Recibirás una notificación por correo y en tu dashboard cuando el depósito sea aprobado.</li>
+    </ol>
+  </div>
+</div>
+{% endblock %}

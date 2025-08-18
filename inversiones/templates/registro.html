@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear cuenta{% endblock %}
+
+{% block content %}
+<style>
+  /* Fondo amarillo suave para el cuadro */
+  .register-card {
+    background-color: #fbc02d; /* Amarillo OOZ */
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(251, 192, 45, 0.4);
+    padding: 2rem;
+    max-width: 450px;
+    width: 100%;
+  }
+  /* Inputs y labels */
+  .register-card label {
+    font-weight: 600;
+    color: #333;
+  }
+  .register-card input {
+    border-radius: 8px;
+    border: 1px solid #d1b200;
+    padding: 10px 12px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .register-card input:focus {
+    outline: none;
+    border-color: #b38f00;
+    box-shadow: 0 0 8px #b38f00;
+  }
+  /* Botón */
+  .register-btn {
+    background-color: #333;
+    color: #fbc02d;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .register-btn:hover {
+    background-color: #222;
+  }
+  /* Texto links */
+  .register-footer a {
+    color: #222;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .register-footer a:hover {
+    text-decoration: underline;
+  }
+
+  /* Switch toggle estilo */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 26px;
+  }
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  input:checked + .slider {
+    background-color: #333;
+  }
+  input:checked + .slider:before {
+    transform: translateX(24px);
+  }
+  .show-pass-label {
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+    user-select: none;
+    vertical-align: middle;
+  }
+</style>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 90vh; background-color: #fff8e1;">
+  <div class="card shadow-lg border-0 register-card">
+    <div class="card-body p-4">
+      <h3 class="text-center mb-4 text-dark">Crear cuenta</h3>
+      <p class="text-center text-dark mb-4">Únete a nuestra plataforma para empezar a invertir y ganar recompensas.</p>
+
+      {% if messages %}
+      <div class="mb-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} text-center py-2">
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <form method="POST" novalidate>
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="mb-3">
+          {{ form.username.label_tag }}
+          {{ form.username }}
+          {% if form.username.errors %}
+          <small class="text-danger">{{ form.username.errors.0 }}</small>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.email.label_tag }}
+          {{ form.email }}
+          {% if form.email.errors %}
+          <small class="text-danger">{{ form.email.errors.0 }}</small>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.password1.label_tag }}
+          {{ form.password1 }}
+          {% if form.password1.errors %}
+          <small class="text-danger">{{ form.password1.errors.0 }}</small>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.password2.label_tag }}
+          {{ form.password2 }}
+          {% if form.password2.errors %}
+          <small class="text-danger">{{ form.password2.errors.0 }}</small>
+          {% endif %}
+        </div>
+
+        <label class="show-pass-label" for="showPasswordToggle">Mostrar contraseñas</label>
+        <label class="switch">
+          <input type="checkbox" id="showPasswordToggle" />
+          <span class="slider"></span>
+        </label>
+
+        <button type="submit" class="btn btn-dark w-100 register-btn mt-3">Registrarme</button>
+      </form>
+
+      <div class="text-center mt-3 register-footer">
+        <p class="text-dark mb-0">¿Ya tienes cuenta?
+          <a href="{% url 'login' %}" class="fw-bold text-dark">Inicia sesión</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const pass1Input = document.getElementById("id_password1");
+  const pass2Input = document.getElementById("id_password2");
+  const toggleCheckbox = document.getElementById("showPasswordToggle");
+
+  toggleCheckbox.addEventListener('change', function() {
+    const show = this.checked;
+    pass1Input.type = show ? 'text' : 'password';
+    pass2Input.type = show ? 'text' : 'password';
+  });
+</script>
+{% endblock %}
