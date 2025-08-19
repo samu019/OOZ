@@ -1,2 +1,1 @@
-web: gunicorn plataforma_inversiones_base.wsgi:application
-
+web: gunicorn plataforma_inversiones.wsgi:application
